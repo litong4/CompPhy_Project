@@ -4,12 +4,18 @@
 #include<cstdlib>
 #include<cmath>
 #include<ctime>
+#include "armadillo"
 using namespace std;
+using namespace arma;
 
 double fun_f(double);
 double fun_ans(double);
-void gen_tri_solve(int,const double*,const double*,const double*, double*, const double*);
+void gen_tri_solve(int,const double*,const double*,const double*,double*,const double*);
+void spe_tri_init(int,double*);
+void spe_tri_solve(int,const double*,double*,const double*);
 void output_all(const string&,double,int,const double*,const double*,const double*);
+void gen_mat_solve(int,const mat&,double*,const double*);
+
 int main(int argc, char* argv[])
 {
     // command line input
@@ -23,6 +29,11 @@ int main(int argc, char* argv[])
     else
     {
         n=atoi(argv[1]);
+        if (n<=2)
+        {
+            cout << "Error! Too few points!"<<endl;
+            return 0;
+        }
         filename=argv[2];
     }
     
@@ -35,6 +46,7 @@ int main(int argc, char* argv[])
     u=new double[n+1]; b=new double[n+1];
     d=new double[n+1]; e=new double[n+1]; f=new double[n+1]; 
         //d[0], d[n], e[0], e[n], e[n-1], f[0], f[n], f[n-1] are never used
+        //b[0], b[n] are not used in solvers
     u[0]=0.0; u[n]=0.0; 
     for (int i=0; i<=n; i++)
     {
@@ -49,7 +61,40 @@ int main(int argc, char* argv[])
     start=clock(); 
     gen_tri_solve(n,d,e,f,u,b);
     finish=clock(); 
-    output_all(filename,(double)(finish-start)/CLOCKS_PER_SEC,n,x,u,y);
+    output_all(filename+"_gen.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,x,u,y);
+    
+    //clean vector u
+    for (int i=0; i<=n; i++) u[i]=0.0; 
+    
+    //use a specific solver for this problem
+    //using feature that the matrix has identical values along the diagonal and identical (but different) values for the non-diagonal elements
+    spe_tri_init(n,d);
+    start=clock();
+    spe_tri_solve(n,d,u,b);
+    finish=clock();
+    output_all(filename+"_spe.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,x,u,y);
+    
+    //use armadillo for LU decomposition
+    mat A(n-1,n-1);
+    for (int i=0;i<n-1;i++)
+    {
+        for (int j=0;j<n-1;j++)
+        { 
+            if (i==j) 
+                A(i,j)=2.0;
+            else
+                if (abs(i-j)==1) 
+                    A(i,j)=-1.0;
+                else
+                    A(i,j)=0.0;
+        }
+    }
+    mat Low,Upp; 
+    start=clock();
+    gen_mat_solve(n,A,u,b);
+    finish=clock();
+    output_all(filename+"_arma.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,x,u,y);
+
     
     //delete
     delete[] x; delete[] y; delete[] u; delete[] b;
@@ -109,9 +154,59 @@ void gen_tri_solve(int n,const double* d,const double* e,const double* f, double
     //backward substitution
     u[n-1]=b_t[n-1]/d_t[n-1];
     for (int i=n-2; i>0; i--)
-    {
         u[i]=(b_t[i]-e[i]*u[i+1])/d_t[i];
-    }
     
     delete[] d_t; delete[] b_t;
+}
+
+inline void spe_tri_init(int n, double* d)
+{
+    for (int i=1; i<n; i++)
+        d[i]=(double)(i+1)/i; 
+}
+void spe_tri_solve(int n,const double* d,double* u,const double* b)
+{
+    double *b_t=new double[n+1];;
+    b_t[1]=b[1];
+    
+    //forward substitution
+    for (int i=2; i<n; i++)
+        b_t[i]=b[i]+b_t[i-1]/d[i-1];
+    
+    //backward substitution
+    u[n-1]=b_t[n-1]/d[n-1];
+    for (int i=n-2; i>0; i--)
+        u[i]=(b_t[i]+u[i+1])/d[i];
+    
+    delete[] b_t; 
+}
+
+void gen_mat_solve(int n,const mat& A,double* u, const double* b)
+{
+    mat Low(n-1,n-1),Upp(n-1,n-1);
+    lu(Low,Upp,A);  //LU decomposition
+
+    double *v = new double[n-1]; //calculation of v starts from 0, different from u and b
+    
+    //forward substitution for matrix Low
+    v[0]=b[1]; //Low(0,0)=1
+    for (int i=1;i<n-1;i++)
+    {
+        v[i]=b[i+1];
+        for (int j=0;j<i;j++)
+            v[i]=v[i]-Low(i,j)*v[j]; 
+        //Low(i,i)=1
+    }
+    
+    //backward substitution for matrix Upp
+    u[n-1]=v[n-2];
+    for (int i=n-3;i>=0;i--)
+    {
+        u[i+1]=v[i];
+        for (int j=n-2;j>i;j--)
+            u[i+1]=u[i+1]-Upp(i,j)*v[j];
+        u[i+1]=u[i+1]/Upp(i,i); 
+    }
+    
+    delete[] v;
 }
