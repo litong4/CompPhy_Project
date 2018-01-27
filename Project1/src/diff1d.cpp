@@ -13,7 +13,7 @@ double fun_ans(double);
 void gen_tri_solve(int,const double*,const double*,const double*,double*,const double*);
 void spe_tri_init(int,double*);
 void spe_tri_solve(int,const double*,double*,const double*);
-void output_all(const string&,double,int,const double*,const double*,const double*);
+void output_all(const string&,clock_t,int,const double*,const double*,const double*);
 void gen_mat_solve(int,const mat&,double*,const double*);
 
 int main(int argc, char* argv[])
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
         x[i]=h*i; 
         b[i]=h*h*fun_f(x[i]); 
         y[i]=fun_ans(x[i]);
-        d[i]=2; e[i]=-1; f[i]=-1; 
+        d[i]=2.0; e[i]=-1.0; f[i]=-1.0; 
     }
     
     clock_t start, finish;
@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
     start=clock(); 
     gen_tri_solve(n,d,e,f,u,b);
     finish=clock(); 
-    output_all(filename+"_gen.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,x,u,y);
+    output_all(filename+"_gen.txt",finish-start,n,x,u,y);
     
     //clean vector u
     for (int i=0; i<=n; i++) u[i]=0.0; 
@@ -72,29 +72,31 @@ int main(int argc, char* argv[])
     start=clock();
     spe_tri_solve(n,d,u,b);
     finish=clock();
-    output_all(filename+"_spe.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,x,u,y);
+    output_all(filename+"_spe.txt",finish-start,n,x,u,y);
     
     //use armadillo for LU decomposition
-    mat A(n-1,n-1);
-    for (int i=0;i<n-1;i++)
+    if (n<=5000) 
     {
-        for (int j=0;j<n-1;j++)
-        { 
-            if (i==j) 
-                A(i,j)=2.0;
-            else
-                if (abs(i-j)==1) 
-                    A(i,j)=-1.0;
+        mat A(n-1,n-1);
+        for (int i=0;i<n-1;i++)
+        {
+            for (int j=0;j<n-1;j++)
+            { 
+                if (i==j) 
+                    A(i,j)=2.0;
                 else
-                    A(i,j)=0.0;
+                    if (abs(i-j)==1) 
+                        A(i,j)=-1.0;
+                    else
+                        A(i,j)=0.0;
+            }
         }
+        mat Low,Upp; 
+        start=clock();
+        gen_mat_solve(n,A,u,b);
+        finish=clock();
+        output_all(filename+"_arma.txt",finish-start,n,x,u,y);
     }
-    mat Low,Upp; 
-    start=clock();
-    gen_mat_solve(n,A,u,b);
-    finish=clock();
-    output_all(filename+"_arma.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,x,u,y);
-
     
     //delete
     delete[] x; delete[] y; delete[] u; delete[] b;
@@ -113,14 +115,14 @@ inline double fun_ans(double x)
     return (1-(1-exp(-10))*x-exp(-10*x)); 
 }
 
-void output_all(const string& filename,double time,int n,const double* x,const double* u,const double* y)
+void output_all(const string& filename,clock_t time,int n,const double* x,const double* u,const double* y)
 {
     ofstream outfile;
     double rel_error, avg_error=0.0;
     
     outfile.open(filename);
-    outfile <<"n= "<<n<<endl;
-    outfile <<"Use time "<<time<<" second."<<endl;
+    outfile <<"n = "<<n<<endl;
+    outfile <<"Use time "<<time<<" clock ticks."<<endl;
     outfile <<"x, u, y, relative error"<<endl;
     outfile <<x[0]<<' '<<u[0]<<' '<<y[0]<<' '<<0.0<<endl;
     for (int i=1;i<n;i++)
@@ -187,7 +189,7 @@ void gen_mat_solve(int n,const mat& A,double* u, const double* b)
     lu(Low,Upp,A);  //LU decomposition
 
     double *v = new double[n-1]; //calculation of v starts from 0, different from u and b
-    
+
     //forward substitution for matrix Low
     v[0]=b[1]; //Low(0,0)=1
     for (int i=1;i<n-1;i++)
@@ -199,12 +201,12 @@ void gen_mat_solve(int n,const mat& A,double* u, const double* b)
     }
     
     //backward substitution for matrix Upp
-    u[n-1]=v[n-2];
+    u[n-1]=v[n-2]/Upp(n-2,n-2);
     for (int i=n-3;i>=0;i--)
     {
         u[i+1]=v[i];
-        for (int j=n-2;j>i;j--)
-            u[i+1]=u[i+1]-Upp(i,j)*v[j];
+        for (int j=i+1;j<=n-2;j++)
+            u[i+1]=u[i+1]-Upp(i,j)*u[j+1];
         u[i+1]=u[i+1]/Upp(i,i); 
     }
     
