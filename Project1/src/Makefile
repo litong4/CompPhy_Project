@@ -1,9 +1,9 @@
 
 CC := c++
 
-CFLAGS := -std=c++11 -lm -larmadillo -lblas -llapack
+CFLAGS := -std=c++11 -lm -larmadillo -lblas -llapack -O3
 
-diff1d: diff1d.cpp
+diff1d.exe: diff1d.cpp
 	$(CC) -o diff1d.exe ./diff1d.cpp $(CFLAGS)
 
 clean:

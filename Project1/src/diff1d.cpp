@@ -121,7 +121,7 @@ inline double fun_ans(double x)
 void output_all(const string& filename,double time,int n,const double* x,const double* u,const double* y)
 {
     ofstream outfile;
-    double rel_error, avg_error=0.0;
+    double rel_error, max_error=-1.0;
     
     outfile.open(filename);
     outfile <<"n = "<<n<<endl;
@@ -131,16 +131,22 @@ void output_all(const string& filename,double time,int n,const double* x,const d
         outfile <<"x, u, y, relative error"<<endl;
         outfile <<x[0]<<' '<<u[0]<<' '<<y[0]<<' '<<0.0<<endl;
         for (int i=1;i<n;i++)
+        {
+            rel_error=abs((u[i]-y[i])/y[i]); 
+            if (rel_error>max_error) max_error=rel_error; 
             outfile <<x[i]<<' '<<u[i]<<' '<<y[i]<<' '<<rel_error<<endl;
+        }
         outfile <<x[n]<<' '<<u[n]<<' '<<y[n]<<' '<<0.0<<endl;
     }
-    for (int i=1;i<n;i++)
+    else
     {
-        rel_error=abs((u[i]-y[i])/y[i]); 
-        avg_error=avg_error+rel_error;
+        for (int i=1;i<n;i++)
+        {
+            rel_error=abs((u[i]-y[i])/y[i]); 
+            if (rel_error>max_error) max_error=rel_error; 
+        }
     }
-    avg_error=avg_error/(n-1);
-    outfile <<"Average relative error is "<<avg_error<<endl; 
+    outfile <<"Maximum relative error is "<<max_error<<endl; 
     outfile <<endl; 
     outfile.close(); 
 }

@@ -1002,5 +1002,5 @@ x, u, y, relative error
 0.998 0.00199898 0.00199899 8.33329e-06
 0.999 0.00099949 0.000999498 8.33329e-06
 1 0 5.88857e-18 0
-Average relative error is 8.33329e-06
+Maximum relative error is 8.33329e-06
 

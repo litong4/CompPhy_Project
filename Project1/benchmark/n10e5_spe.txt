@@ -1,4 +1,4 @@
 n = 100000
-Use time 0.015625 seconds.
-Average relative error is 8.33313e-10
+Use time 0 seconds.
+Maximum relative error is 8.3368e-10
 
