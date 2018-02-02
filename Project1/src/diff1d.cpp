@@ -8,12 +8,15 @@
 using namespace std;
 using namespace arma;
 
+const int yesarma=5000;
+const int yesoutall=10000;
+
 double fun_f(double);
 double fun_ans(double);
 void gen_tri_solve(int,const double*,const double*,const double*,double*,const double*);
 void spe_tri_init(int,double*);
 void spe_tri_solve(int,const double*,double*,const double*);
-void output_all(const string&,clock_t,int,const double*,const double*,const double*);
+void output_all(const string&,double,int,const double*,const double*,const double*);
 void gen_mat_solve(int,const mat&,double*,const double*);
 
 int main(int argc, char* argv[])
@@ -61,7 +64,7 @@ int main(int argc, char* argv[])
     start=clock(); 
     gen_tri_solve(n,d,e,f,u,b);
     finish=clock(); 
-    output_all(filename+"_gen.txt",finish-start,n,x,u,y);
+    output_all(filename+"_gen.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,x,u,y);
     
     //clean vector u
     for (int i=0; i<=n; i++) u[i]=0.0; 
@@ -72,10 +75,10 @@ int main(int argc, char* argv[])
     start=clock();
     spe_tri_solve(n,d,u,b);
     finish=clock();
-    output_all(filename+"_spe.txt",finish-start,n,x,u,y);
+    output_all(filename+"_spe.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,x,u,y);
     
     //use armadillo for LU decomposition
-    if (n<=5000) 
+    if (n<=yesarma) 
     {
         mat A(n-1,n-1);
         for (int i=0;i<n-1;i++)
@@ -95,7 +98,7 @@ int main(int argc, char* argv[])
         start=clock();
         gen_mat_solve(n,A,u,b);
         finish=clock();
-        output_all(filename+"_arma.txt",finish-start,n,x,u,y);
+        output_all(filename+"_arma.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,x,u,y);
     }
     
     //delete
@@ -115,23 +118,27 @@ inline double fun_ans(double x)
     return (1-(1-exp(-10))*x-exp(-10*x)); 
 }
 
-void output_all(const string& filename,clock_t time,int n,const double* x,const double* u,const double* y)
+void output_all(const string& filename,double time,int n,const double* x,const double* u,const double* y)
 {
     ofstream outfile;
     double rel_error, avg_error=0.0;
     
     outfile.open(filename);
     outfile <<"n = "<<n<<endl;
-    outfile <<"Use time "<<time<<" clock ticks."<<endl;
-    outfile <<"x, u, y, relative error"<<endl;
-    outfile <<x[0]<<' '<<u[0]<<' '<<y[0]<<' '<<0.0<<endl;
+    outfile <<"Use time "<<time<<" seconds."<<endl;
+    if (n<=yesoutall)
+    {
+        outfile <<"x, u, y, relative error"<<endl;
+        outfile <<x[0]<<' '<<u[0]<<' '<<y[0]<<' '<<0.0<<endl;
+        for (int i=1;i<n;i++)
+            outfile <<x[i]<<' '<<u[i]<<' '<<y[i]<<' '<<rel_error<<endl;
+        outfile <<x[n]<<' '<<u[n]<<' '<<y[n]<<' '<<0.0<<endl;
+    }
     for (int i=1;i<n;i++)
     {
         rel_error=abs((u[i]-y[i])/y[i]); 
-        outfile <<x[i]<<' '<<u[i]<<' '<<y[i]<<' '<<rel_error<<endl;
         avg_error=avg_error+rel_error;
     }
-    outfile <<x[n]<<' '<<u[n]<<' '<<y[n]<<' '<<0.0<<endl;
     avg_error=avg_error/(n-1);
     outfile <<"Average relative error is "<<avg_error<<endl; 
     outfile <<endl; 
@@ -161,7 +168,7 @@ void gen_tri_solve(int n,const double* d,const double* e,const double* f, double
     delete[] d_t; delete[] b_t;
 }
 
-inline void spe_tri_init(int n, double* d)
+void spe_tri_init(int n, double* d)
 {
     for (int i=1; i<n; i++)
         d[i]=(double)(i+1)/i; 

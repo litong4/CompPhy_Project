@@ -1,0 +1,4 @@
+n = 100000
+Use time 0 seconds.
+Average relative error is 1.29249e-09
+
