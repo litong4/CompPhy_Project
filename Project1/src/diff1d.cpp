@@ -81,18 +81,12 @@ int main(int argc, char* argv[])
     if (n<=yesarma) 
     {
         mat A(n-1,n-1);
+        A.zeros();
         for (int i=0;i<n-1;i++)
         {
-            for (int j=0;j<n-1;j++)
-            { 
-                if (i==j) 
-                    A(i,j)=2.0;
-                else
-                    if (abs(i-j)==1) 
-                        A(i,j)=-1.0;
-                    else
-                        A(i,j)=0.0;
-            }
+            A(i,i)=2.0;
+            if (i+1<n-1) A(i,i+1)=-1.0;
+            if (i-1>=0) A(i,i-1)=-1.0;
         }
         mat Low,Upp; 
         start=clock();

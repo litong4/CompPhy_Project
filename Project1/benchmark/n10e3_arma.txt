@@ -1,5 +1,5 @@
 n = 1000
-Use time 1.90625 seconds.
+Use time 0.96875 seconds.
 x, u, y, relative error
 0 0 0 0
 0.001 0.00895014 0.00895021 8.33329e-06

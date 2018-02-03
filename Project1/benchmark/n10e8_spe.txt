@@ -1,4 +1,4 @@
 n = 100000000
-Use time 2.98438 seconds.
+Use time 4.0625 seconds.
 Maximum relative error is 2.97225e-09
 
