@@ -3,22 +3,34 @@
 \usepackage{graphicx} 
 \usepackage{authblk}
 \usepackage{url}
+\usepackage{multirow}
 
 \title{Application and Comparison of Different Numerical Methods for One-dimensional Poisson's Equation}
 \author[1]{Tong Li}
-\affil[1]{Department of Physics \& Astronomy, Michigan State University}
+\affil[1]{Department of Physics and Astronomy, Michigan State University}
 \date{}
 
 \begin{document}
 	\maketitle
 	\begin{abstract}
-		test
+	Poisson's equation is an important type of differential equations in science and engineering, 
+	and thus it is valuable to study numerical methods for it.  
+	In this report we numerically solve a one-dimensional Poisson's equation (with Dirichlet boundary conditions)
+	on an equidistant grid 
+	by converting it into a set of linear equations $\mathbf{A}\mathbf{v}=\mathbf{\overline{f}}$ 
+	where $\mathbf{A}$ is a tri-diagonal matrix. 
+	Three numerical methods are discussed and compared in this report: 
+	Gaussian elimination for a general tri-diagonal matrix (M1), 
+	a special method that makes use of the fact that matrix $\mathbf{A}$ has identical elements along the diagonal and identical (but different) values for the non-diagonal elements (M2), 
+	and LU decomposition (M3). 
+	The relative errors of these methods are consistent with the approximation error introduced in discretization, 
+	and M2 is the most efficient algorithm as it uses the property of this problem to do precalculation. 
 	\end{abstract}
 
 	\section{Introduction}
-	Poisson's equation is an important type of differential equations in physics, 
+	Poisson's equation is one important type of differential equations in science and engineering, 
 	especially in electromagnetism. 
-	The Poisson's equation has the following form: 
+	Poisson's equation has the following form: 
 	\begin{equation}
 	\nabla^{2} u\left( \vec{r}\right)  = f\left( \vec{r} \right) \ ,
 	\end{equation}
@@ -64,9 +76,10 @@
 	u(x-h)&=&u(x)-u'(x)h+\frac{1}{2}u''(x)h^2+O(h^2)\ .
 	\end{eqnarray}
 	By adding the two equations above, we can approximate the second derivative as
-	\begin{equation}
-	u''(x_i)=\frac{v_{i+1}+v_{i-1}-2v_i}{h^2}+O(h^2)\ .
+	\begin{equation}\label{diffappr}
+	u''(x_i)=\frac{v_{i+1}+v_{i-1}-2v_i}{h^2}+O(h^2)
 	\end{equation}
+	where the approximation error is $O(h^2)$. 
 	\par
 	So the problem can be converted to a set of linear equations
 	\begin{equation}
@@ -168,20 +181,20 @@
 	u_{n-1}&=&\frac{\tilde{f}_{n-1}}{\tilde{b}_{n-1}} \\
 	u_{i}&=&\frac{\tilde{f}_i-c_i u_{i+1}}{\tilde{b}_i}\quad i=n-2,n-3,\dots,1\ .
 	\end{eqnarray}
-	This algorithm needs $n$ floating point operations. 
-	The time complexity is $O(n)$. 
+	This algorithm needs $[8(n-2)+1]$ floating-point operations (FLOPs), and 
+	its time complexity is $O(n)$. 
 	
-	\subsection{Special method for this problem}\label{m2}
-	By Eq. \ref{matA} and \ref{gentri}, we can see that $a_i=c_i=-1$ and $b_i=2$. 
+	\subsection{A special method for this problem}\label{m2}
+	By Eq. \ref{matA} and \ref{gentri}, we can see that $a_i=c_i=-1$ and $b_i=2$ for any $i$.  
 	Thus, Eq. \ref{tildeb} becomes 
 	\begin{equation}
 	\tilde{b}_i=2-\frac{1}{\tilde{b}_{i-1}}
 	\end{equation}
-	which leads to 
+	which yields  
 	\begin{equation}\label{spetildeb}
 	\tilde{b}_i=\frac{i+1}{i}\ . 
 	\end{equation}
-	Therefore, $\tilde{\mathrm{b}}$ can be calculated beforehand, 
+	Therefore, $\tilde{\mathbf{b}}$ can be calculated beforehand, 
 	which eliminates redundant calculations when we change function $f(x)$.
 	\par 
 	Eq. \ref{tildef} and \ref{spetildeb} yield 
@@ -194,7 +207,10 @@
 	u_{n-1}&=&\frac{n-1}{n}\tilde{f}_{n-1} \\
 	u_{i}&=&\frac{i}{i+1}\left(\tilde{f}_{i}+u_{i+1}\right)\quad i=n-2,n-3,\dots,1\ .
 	\end{eqnarray}
-	The time complexity of this algorithm is also $O(n)$. 
+	Since $\tilde{\mathbf{b}}$ can be precalcuated, 
+	we do not consider Eq. \ref{spetildeb} when counting FLOPs. 
+	So this algorithm needs $[4(n-2)+1]$ FLOPs, 
+	and its time complexity is also $O(n)$. 
 	
 	
 	\subsection{LU decomposition}\label{m3}
@@ -216,7 +232,6 @@
 	\section{Results and discussion}\label{result}
 	In this section we will discuss the results of the three numerical methods described in section \ref{method}. 
 	The three methods discussed in section \ref{m1}, \ref{m2} and \ref{m3} are denoted as M1, M2 and M3, respectively.  
-	
 	For benchmark, we choose $f(x)=100 e^{-10x}$, which gives an analytical
 	solution of Eq. \ref{diff}: 
 	\begin{equation}
@@ -227,12 +242,86 @@
 	\epsilon_i=\left| \frac{v_i-u(x_i)}{u(x_i)}\right|\ .
 	\end{equation}
 	\par
-	The maximum relative errors of methods M1, M2 and M3 for different grid spacing $h$ are shown in Fig. ??. 
+	\begin{figure}[tb]
+		\centering
+		\includegraphics[width=\textwidth]{fig_error.eps}
+		\caption{Maximum relative errors of M1 and M2 for different grid spacing $h$. }
+		\label{fig:error}
+	\end{figure}
+	The maximum relative errors of methods M1 and M2 for different grid spacing $h$ are shown in Figure \ref{fig:error}. 
+	These errors are small enough to confirm the correctness of our program. 
+	In the region of $h=10^{-1} \sim 10^{-4}$, M1 and M2 have the same relative errors $\epsilon$. 
+	The logarithm of $\epsilon$ decreases linearly as $\log h$ decreases, with a slope of 2. 
+	So in this region the relative error is $O(h^2)$, the same as the approximation error given in Eq. \ref{diffappr}. 
+	When $h<10^{-4}$, the relative error begins to fall down slowly and even increase as $h$ decreases, 
+	which indicates that the round-off error becomes important for very small $h$. 
+	In Eq. \ref{diffappr}, both $(v_{i+1}-v_i)$ and $(v_{i-1}-v_i)$ give an $\epsilon_M=O(10^{-15})$ 
+	round-off error (for double precision), 
+	and thus the round-off error should be $O(\frac{10^{-15}}{h^2})$ for $u''(x_i)$. 
+	Therefore, when $h=10^{-4}\sim 10^{-5}$, $O(\frac{10^{-15}}{h^2})\approx O(h^2)$, i.e. 
+	the round-off and approximation error become comparable. 
+	So we should not use grid spacing $h<10^{-4}$ when the round-off error contribute significantly to our loss of precision. 
 	\par
-	Table ?? shows the time used by algorithms M1, M2 and M3 for different grid spacing $h$.  
+	Because of memory and time limitation, M3 cannot go to $h<10^{-3}$. 
+	For $h\geq 10^{-3}$, M3 gives the same relative errors as M1 and M2, which are not shown in Figure \ref{fig:error}. 
+	\par
+	\begin{table}[tb]
+		\centering
+		\caption{Time used by M1 and M2 for different number of grid points $n$. 
+		Each value given in this table is the average over three measurements. 
+	    For M2 the time of precalculating Eq. \ref{spetildeb} is not included. }
+		\begin{tabular}{cccc}
+			\hline
+			\hline
+			\multirow{2}{*}{$n$} &\multirow{2}{*}{$h$}& \multicolumn{2}{c}{Time (sec)}\\
+			& & M1 & M2  \\
+			\hline
+			$10^6$&$10^{-6}$&0.0469 & 0.0313 \\
+			$10^7$&$10^{-7}$&0.3698 & 0.1875\\
+			$10^8$&$10^{-8}$&7.0729 & 2.4323\\
+			\hline
+			\hline
+		\end{tabular}
+		\label{table:time}
+	\end{table}
+	Table \ref{table:time} shows the time used by algorithms M1 and M2 for different number of grid points $n$, 
+	with no optimization flag applied. 
+	In order to measure the time accurately, $n$ is chosen to be large enough ($10^6,\ 10^7\text{ and }10^8$), 
+	and each value given in Table \ref{table:time} is the average over three measurements. 
+	For M2, the time of precalculating Eq. \ref{spetildeb} is not included. 
+	As $n$ increases, the time of both M1 and M2 rises almost linearly, corresponding to their O(n) time complexity. 
+	In addition, M2 is much faster than M1 because Eq. \ref{spetildeb} is precalculated in M2. 
+	For the same $n$, M2's FLOPs is about half of M1's, and the time of M2 is also roughly half of M1's. 
+	Therefore, from the perspective of efficiency, 
+	M2 is the best option to solve a one-dimensional Poisson's equation with Dirichlet boundary conditions, 
+	especially when we want to change the inhomogeneous term $f(x)$ many times. 
 	
 	\section{Conclusions and outlook}\label{conclude}
-	conclusion
+	In this report we discuss three numerical methods to solve a one-dimensional Poisson's equation 
+	with Dirichlet boundary conditions. 
+	First, this problem is discretized on equidistant grid points with spacing $h$, and converted into a set of linear equations 
+	$\mathbf{A}\mathbf{v} = \overline{\mathbf{f}}$ where $\mathbf{A}$ is a tri-diagonal matrix. 
+	Then we describe three numerical methods to solve this equation: 
+	Gaussian elimination for a general tri-diagonal matrix (M1, section \ref{m1}), 
+	a special method that makes use of the fact that matrix $\mathbf{A}$ has identical elements along the diagonal and identical (but different) values for the non-diagonal elements (M2, section \ref{m2}), 
+	and LU decomposition (M3, section \ref{m3}). 
+	\par
+	In section \ref{result} we apply the three methods to solve $-u''(x)=100 e^{-10x}$ whose analytical solution is known. 
+	The small relative errors extracted from our program confirm the correctness of these algorithms. 
+	When $h=10^{-1} \sim 10^{-4}$ the relative error $\epsilon \sim h^2$, which is consistent with the approximation error
+	of the second derivative (Eq. \ref{diffappr}). When $h<10^{-4}$ round-off error becomes more and more dominant as $h$ decreases. 
+	Thus the optimal grid spacing $h$ is $10^{-4}$. 
+	Comparing the time used by these methods, we find that M2 is the most efficient one 
+	because it fully utilizes the property of this problem to precalculate. 
+	The advantage of M2 will be more significant if we want to change the inhomogeneous term many times. 
+	\par
+	Although the Poisson's equation we usually see is two- or three-dimensional, 
+	the algorithms for one-dimensional Poisson's equation are still useful because
+	many high-dimensional problems can be reduced to one dimension by methods like separation of variables. 
+	In addition, this project provides numerical algorithms to solve linear equation $\mathbf{A}\mathbf{x}=\mathbf{b}$ 
+	where $\mathbf{A}$ is a tri-diagonal matrix. 
+	This type of problem often appears in science and engineering, so it is important to understand
+	all the numerical methods discussed in this report. 
 	
 	\section*{Acknowledgments}
 	I am grateful for the sincere guidance from Prof. Morten Hjorth-Jensen, and

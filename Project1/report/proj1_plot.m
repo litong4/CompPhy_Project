@@ -1,0 +1,12 @@
+h=xlsread('proj1_data.xlsx','Error','B2:B9');
+error=xlsread('proj1_data.xlsx','Error','C2:E9');
+figure(1);
+%loglog(h,error(:,1),'.-','LineWidth',3);
+loglog(h,error(:,1),'.-');
+hold on;
+loglog(h,error(:,2),'.--');
+%loglog(h,error(:,3),'.:','LineWidth',1);
+axis([-inf,1e-1,1e-11,1e-1]);
+xlabel('Grid spacing $h$','FontName', 'Times New Roman','Interpreter', 'LaTeX');
+ylabel('Relative error $\epsilon$','FontName', 'Times New Roman','Interpreter', 'LaTeX');
+legend('M1','M2','location','southeast');
