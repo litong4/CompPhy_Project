@@ -11,7 +11,7 @@ using namespace arma;
 const double pi=3.14159265359;
 const double epsilon=1e-6; 
 
-void output_all(const string&,const double,const int,const double,const double,vec&,const mat&);
+void output_all(const string&,const double,const int,const double,const double,vec&,mat&);
 void gen_mat_eig(const int,const mat&,vec&,mat&);
 void gen_mat_jacobi(const int,mat,vec&,mat&);
 
@@ -64,7 +64,6 @@ int main(int argc, char* argv[])
     start=clock();
     gen_mat_jacobi(n,Amat,eigenval,eigenvec);
     finish=clock();
-    eigenval=sort(eigenval); 
     output_all(filename+"_jacobi.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,d,a,eigenval,eigenvec); 
     
     return 0;
@@ -111,7 +110,7 @@ void gen_mat_jacobi(const int n,mat A,vec& eigval,mat& eigvec)
         temp.eye(); 
         temp(k,k)=c; temp(l,l)=c; 
         temp(k,l)=-s; temp(l,k)=s; 
-        eigvec=temp*eigvec; 
+        eigvec=eigvec*temp; 
         A=temp.t()*A*temp; 
     }
     
@@ -119,19 +118,23 @@ void gen_mat_jacobi(const int n,mat A,vec& eigval,mat& eigvec)
         eigval(i)=A(i,i); 
 }
 
-void output_all(const string& filename,const double time,const int n,const double d,const double a,vec& eigval,const mat& eigvec)
+void output_all(const string& filename,const double time,const int n,const double d,const double a,vec& eigval,mat& eigvec)
 {
     ofstream outfile;
     double rel_error, max_error=-1.0;
     double eigval_correct; 
+    uvec index_order(n-1); 
     
     outfile.open(filename);
     outfile <<"n = "<<n<<endl;
     outfile <<"d = "<<d<<" and a = "<<a<<endl;
     outfile <<"Use time "<<time<<" seconds."<<endl; 
     
+    index_order=sort_index(eigval); 
+    eigval=sort(eigval);  
+    eigvec=eigvec.cols(index_order); 
     eigval.print(outfile,"Eigenvalues: ");
-    eigvec.print(outfile,"Eigenvectors: ");
+    eigvec.print(outfile,"Eigenvectors: "); 
     
     for (int i=0;i<n-1;i++)
     {
