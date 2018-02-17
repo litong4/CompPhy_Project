@@ -9,11 +9,13 @@ using namespace std;
 using namespace arma;
 
 const double pi=3.14159265359;
-const double epsilon=1e-6; 
+const double epsilon=1e-5; 
+int maxiteration=1000000; 
 
 void output_all(const string&,const double,const int,const double,const double,vec&,mat&);
+void output_fail(const string&,const string&,const double,const int,const double,const double);
 void gen_mat_eig(const int,const mat&,vec&,mat&);
-void gen_mat_jacobi(const int,mat,vec&,mat&);
+bool gen_mat_jacobi(const int,mat,vec&,mat&);
 
 int main(int argc, char* argv[])
 {
@@ -62,26 +64,33 @@ int main(int argc, char* argv[])
     
     //Jacobi's method
     start=clock();
-    gen_mat_jacobi(n,Amat,eigenval,eigenvec);
-    finish=clock();
-    output_all(filename+"_jacobi.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,d,a,eigenval,eigenvec); 
+    if (gen_mat_jacobi(n,Amat,eigenval,eigenvec))
+    {
+        finish=clock();
+        output_all(filename+"_jacobi.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,d,a,eigenval,eigenvec); 
+    }
+    else
+    {
+        finish=clock(); 
+        output_fail(filename+"_jacobi.txt","Jacobi method exceeds maximum iteration number!",(double)(finish-start)/CLOCKS_PER_SEC,n,d,a); 
+    }
     
     return 0;
 }
 
+//Armadillo eigenvalue decomposition
 void gen_mat_eig(const int n,const mat& A,vec& eigval,mat& eigvec)
 {
     eig_sym(eigval,eigvec,A); 
 }
 
+//check whether Jacobi algorithm should stop. If not, return the largest non-diagonal element's index (k,l) with k>l. 
 bool jacobi_check(const mat& A,const int n,const double epsilon,int& k,int& l)
 {
-    double norm=0.0; 
     double maximum=-1.0; 
     for (int i=0;i<n-1;i++)
         for (int j=0;j<i;j++)
         {
-            norm=norm+A(i,j)*A(i,j)*2; 
             if (abs(A(i,j))>maximum) 
             {
                 maximum=abs(A(i,j)); 
@@ -89,33 +98,61 @@ bool jacobi_check(const mat& A,const int n,const double epsilon,int& k,int& l)
             }
         }
     
-    if (norm>epsilon) 
+    if (maximum>epsilon) 
         return 1;
     else
         return 0; 
 }
 
-void gen_mat_jacobi(const int n,mat A,vec& eigval,mat& eigvec)
+//Jacobi algorithm for eigenvalue decomposition 
+bool gen_mat_jacobi(const int n,mat A,vec& eigval,mat& eigvec)
 {
     int k,l; 
-    double tau,t,c,s; 
+    double tau,t,c,s,temp_ik,temp_il,a_kk,a_ll,a_kl;
+    int iter=0; 
+    bool flag=true; 
+    
     eigvec.eye(); 
-    mat temp(n-1,n-1); 
     while (jacobi_check(A,n,epsilon,k,l))   //k>l
     {
+        iter++; 
+        if (iter>maxiteration)
+        {
+            flag=false;
+            break;
+        }
+        
         tau=(A(l,l)-A(k,k))/2.0/A(k,l); 
-        t=-tau+sqrt(1.0+tau*tau); 
+        if (tau>=0)
+            t=1.0/(tau+sqrt(1.0+tau*tau));
+        else
+            t=-1.0/(-tau+sqrt(1.0+tau*tau)); 
         c=1.0/sqrt(1+t*t); 
         s=t*c; 
-        temp.eye(); 
-        temp(k,k)=c; temp(l,l)=c; 
-        temp(k,l)=-s; temp(l,k)=s; 
-        eigvec=eigvec*temp; 
-        A=temp.t()*A*temp; 
+
+        a_kk=A(k,k); a_ll=A(l,l); a_kl=A(k,l); 
+        A(k,k)=a_kk*c*c-2*a_kl*c*s+a_ll*s*s;
+        A(l,l)=a_ll*c*c+2*a_kl*c*s+a_kk*s*s; 
+        A(l,k)=0.0; A(k,l)=0.0; 
+        for (int i=0;i<n-1;i++)
+        {
+            if ((i!=k)&&(i!=l))
+            {
+                temp_ik=A(i,k); temp_il=A(i,l); 
+                A(i,k)=temp_ik*c-temp_il*s; 
+                A(i,l)=temp_il*c+temp_ik*s; 
+                A(k,i)=A(i,k); A(l,i)=A(i,l); 
+            }
+            temp_il=eigvec(i,l); temp_ik=eigvec(i,k); 
+            eigvec(i,k)=-temp_il*s+temp_ik*c; 
+            eigvec(i,l)=temp_il*c+temp_ik*s; 
+        }
     }
     
     for (int i=0;i<n-1;i++)
         eigval(i)=A(i,i); 
+    
+    return flag;
 }
 
 void output_all(const string& filename,const double time,const int n,const double d,const double a,vec& eigval,mat& eigvec)
@@ -146,4 +183,14 @@ void output_all(const string& filename,const double time,const int n,const doubl
     outfile<<"Maximum relative error is "<<max_error<<endl; 
     
     outfile.close();
+}
+
+void output_fail(const string& filename,const string& message,const double time,const int n,const double d,const double a)
+{
+    ofstream outfile;
+    outfile.open(filename);    
+    outfile <<message<<endl; 
+    outfile <<"n = "<<n<<endl;
+    outfile <<"d = "<<d<<" and a = "<<a<<endl;
+    outfile <<"Use time "<<time<<" seconds."<<endl; 
 }
