@@ -27,20 +27,44 @@ TEST_CASE("Jacobi check is performed to find the maximum off-diagonal element in
 TEST_CASE("Eigenvalue and eigenvector test using a tridiagonal Toeplitz matrix","[Eigenvalue and eigenvector test]")
 {
     const int n=4; 
-    mat A(n-1,n-1); 
-    A.zeros(); 
+    const double d=3, a=-2, pi=3.14159265359; 
+    double fnorm_squ=0.0;  
+    double temp; 
+    mat Amat(n-1,n-1); 
+    
+    //intialization
+    Amat.zeros(); 
     for (int i=0;i<n-1;i++)
     {
-        A(i,i)=3; 
-        if (i+1<n-1) A(i,i+1)=-2; 
-        if (i-1>=0) A(i,i-1)=-2; 
+        //fnorm_squ is the square of F norm before diagonalization
+        Amat(i,i)=d; 
+        fnorm_squ=fnorm_squ+d*d; 
+        if (i+1<n-1) {Amat(i,i+1)=a; fnorm_squ=fnorm_squ+a*a; }
+        if (i-1>=0) {Amat(i,i-1)=a; fnorm_squ=fnorm_squ+a*a; }
     }
      
     vec eigval(n-1); mat eigvec(n-1,n-1);  
-    gen_mat_eig(n,A,eigval,eigvec); 
-    REQUIRE(eigval(0)==Approx(0.17157).epsilon(1e-3)); 
-    REQUIRE(eigval(1)==Approx(3.00000).epsilon(1e-3)); 
-    REQUIRE(eigval(2)==Approx(5.82843).epsilon(1e-3)); 
+    gen_mat_eig(n,Amat,eigval,eigvec); //test armadillo eigenvalue solver
+    
+    temp=0.0; 
+    for (int i=0;i<n-1;i++)
+    {
+        REQUIRE(eigval(i)==Approx(d+2*a*cos((i+1)*pi/n))); //test eigenvalues
+        temp=temp+eigval(i)*eigval(i); //calculate square of F norm after diagonalization
+    }
+    REQUIRE(temp==Approx(fnorm_squ)); //test conservation of F norm
+    
+    //test eigenvectors
+    mat testMat; 
+    //first test orthonormalization of eigenvectors
+    testMat=eigvec.t()*eigvec; 
+    for (int i=0;i<n-1;i++)
+        for (int j=0;j<n-1;j++)
+            if (i==j) 
+                REQUIRE(testMat(i,i)==Approx(1)); 
+            else
+                REQUIRE(abs(testMat(i,j))<1e-8);
+    //then test the exact values of eigenvectors
     vec testvec(n-1); 
     testvec(0)=-0.5; testvec(1)=0.7071; testvec(2)=-0.5;
     REQUIRE(abs(dot(testvec,eigvec.col(2)))==Approx(1)); 
@@ -51,13 +75,28 @@ TEST_CASE("Eigenvalue and eigenvector test using a tridiagonal Toeplitz matrix",
     
     double epsilon=1e-5; 
     int maxiteration=1000;
-    REQUIRE(gen_mat_jacobi(n,A,eigval,eigvec,epsilon,maxiteration)==1); 
+    REQUIRE(gen_mat_jacobi(n,Amat,eigval,eigvec,epsilon,maxiteration)==1); //test Jacobi eigenvalue solver
     uvec index_order=sort_index(eigval); 
     eigval=sort(eigval);  
     eigvec=eigvec.cols(index_order);
-    REQUIRE(eigval(0)==Approx(0.17151).epsilon(1e-3)); 
-    REQUIRE(eigval(1)==Approx(3.00000).epsilon(1e-3)); 
-    REQUIRE(eigval(2)==Approx(5.82843).epsilon(1e-3));    
+    
+    temp=0.0; 
+    for (int i=0;i<n-1;i++)
+    {
+        REQUIRE(eigval(i)==Approx(d+2*a*cos((i+1)*pi/n))); //test eigenvalues
+        temp=temp+eigval(i)*eigval(i); //calculate square of F norm after diagonalization
+    }
+    REQUIRE(temp==Approx(fnorm_squ)); //test conservation of F norm
+    
+    //first test orthonormalization of eigenvectors
+    testMat=eigvec.t()*eigvec; 
+    for (int i=0;i<n-1;i++)
+        for (int j=0;j<n-1;j++)
+            if (i==j) 
+                REQUIRE(testMat(i,i)==Approx(1)); 
+            else
+                REQUIRE(abs(testMat(i,j))<1e-8);
+    //then test the exact values of eigenvectors
     testvec(0)=-0.5; testvec(1)=0.7071; testvec(2)=-0.5;
     REQUIRE(abs(dot(testvec,eigvec.col(2)))==Approx(1)); 
     testvec(0)=-0.7071; testvec(1)=0.0; testvec(2)=0.7071;

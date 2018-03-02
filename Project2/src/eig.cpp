@@ -101,7 +101,6 @@ void output_all(const string& filename,const double time,const int n,const doubl
         eigval_correct=d+2*a*cos((i+1)*pi/n); 
         rel_error=abs((eigval(i)-eigval_correct)/eigval_correct); 
         if (rel_error>max_error) max_error=rel_error; 
-        //outfile <<eigval_correct<<endl;
     }
     outfile<<"Maximum relative error is "<<max_error<<endl; 
     
