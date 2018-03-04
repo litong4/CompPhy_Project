@@ -1,28 +1,25 @@
 
-CC := c++
+CXX := c++
 
-CFLAGS := -std=c++11 -lm -larmadillo -lblas -llapack -O3 
+CPPFLAGS := -std=c++11 -lm -larmadillo -lblas -llapack -O3 
 
-PROG := eig.exe
+PROG := beam.exe
 
-OBJS := eig.o eig_solver.o
-
-all: $(PROG) test
+OBJS := beam.o eig_solver.o eig_output.o
 
 $(PROG): $(OBJS)
-	$(CC) -o $@ $^ $(CFLAGS)
+	$(CXX) -o $@ $^ $(CPPFLAGS)
 
-eig.o: eig.cpp eig_solver.hpp 
-	$(CC) -c $< $(CFLAGS)
+beam.o: eig_solver.hpp eig_output.hpp
 
-eig_solver.o: eig_solver.cpp eig_solver.hpp 
-	$(CC) -c $< $(CFLAGS)
+eig_solver.o: eig_solver.hpp 
+
+eig_output.o: eig_output.hpp
     
 test: UnitTest.o eig_solver.o
-	$(CC) -o $@.exe $^ $(CFLAGS)
+	$(CXX) -o $@.exe $^ $(CPPFLAGS)
 
-UnitTest.o: UnitTest.cpp eig_solver.o catch.hpp 
-	$(CC) -c $< $(CFLAGS)
+UnitTest.o: eig_solver.o catch.hpp 
 
 clean:
 	-rm -f *.exe *.o
