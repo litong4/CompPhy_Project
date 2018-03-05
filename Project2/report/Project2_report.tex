@@ -25,10 +25,10 @@
 	\begin{abstract}\label{abstract}
 Eigenvalue decomposition of a Hermitian (or real symmetric) matrix is often the last step to solve a physics problem, and thus 
 in this report we investigate different numerical methods for the eigenvalue problem. 
-First two examples, buckling beam problem and quantum dots, are given to illustrate how a differential equation is transformed 
+First two examples, buckling beam problem and quantum dot, are given to illustrate how a differential equation is transformed 
 to an eigenvalue problem of a real symmetric matrix. 
 Then we discuss details of Jacobi's and bisection methods, two important numerical algorithms for the eigenvalue problem. 
-Applications of these two methods in quantum dots are studied, which shows us when our approximation is good. 
+Applications of these two methods on the quantum dot are studied, which shows us when our approximation is good. 
 In addition, we find that bisection method has a better performance and accuracy than Jacobi's. 
 Therefore, bisection algorithm is usually more appropriate to utilize in physics. 
 	\end{abstract}
@@ -111,9 +111,9 @@ This eigenvalue problem has analytical eigenvalues as
 \end{equation}
 which will be used for unit tests in Sec. \ref{unittests}. 
 
-	\subsection{Quantum dots in three dimensions}
+	\subsection{Quantum dot in three dimensions}
 The eigenvalue problem commonly appears in quantum mechanics. 
-For illustration, we consider quantum dots in a three-dimensional harmonic oscillator potential with frequency $\omega$. 
+For illustration, we consider a quantum dot in a three-dimensional harmonic oscillator potential with frequency $\omega$. 
 At first only one electron is inside the trap and the system is assumed to be spherically symmetric. 
 The radial part of Schr\"{o}dinger's equation for one electron 
 \begin{equation}
@@ -246,7 +246,7 @@ e_i=-\frac{1}{h^2}.
 	\section{Numerical methods}\label{method}
 In order to solve the eigenvalue problems that occur naturally in physics, we will investigate two relevant numerical algorithms 
 (Jacobi's method and bisection method) in this section.  
-	\subsection{Jacobi's method}
+	\subsection{Jacobi's method}\label{jacobi}
 Jacobi's method gives a simple algorithm to diagonalize a real symmetric (or Hermitian) matrix. 
 It is based on Givens rotation 
 \begin{equation}\label{Givens}
@@ -326,8 +326,9 @@ The pseudocode of Jacobi's method is given in Algorithm \ref{JacobiAlgo}.
 	return $\mathbf{u}$,$S$\;
 \end{algorithm}
 
-	\subsection{Bisection method}
+	\subsection{Bisection method}\label{bisection}
 	Wait to be filled by Mengzhi. 
+	
 	\subsection{Unit tests for development}\label{unittests}
 As is stated in Sec. \ref{buckling_sec}, the eigenvalue problem of Eq. \ref{eq:matrixse} 
 has an analytical expression (Eq. \ref{analytical}). 
@@ -337,7 +338,13 @@ In addition, the conservation of Frobenius norm and the orthogonality of eigenve
 to confirm the correctness of our codes. 
 	
 	\section{Results and discussion}\label{results}
-	Wait to be filled for results from Mengzhi. 
+	\subsection{Results of the quantum dot problem}
+In this section we discuss the results of quantum dot obtained from Jacobi's method (Sec. \ref{jacobi}) 
+with different $\rho_{\max}$ and grid points $N$. 
+Tolerance of the maximum off-diagonal element is $10^{-5}$. 
+
+	\subsection{Performance comparison of different methods}
+	Wait to be filled by Mengzhi. 
 	
 	\section{Conclusions and outlook}\label{conclude}
 	Wait to be filled. 
