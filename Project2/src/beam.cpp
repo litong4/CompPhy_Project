@@ -56,19 +56,19 @@ int main(int argc, char* argv[])
     start=clock();
     gen_mat_eig(n,Amat,eigenval,eigenvec);
     finish=clock();
-    output_all(filename+"_arma.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,d,a,eigenval,eigenvec,-1); 
+    output_all(filename+"_arma.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,1.0,eigenval,eigenvec,-1); 
     
     //Jacobi's method
     start=clock();
     if (gen_mat_jacobi(n,Amat,eigenval,eigenvec,epsilon,maxiteration))
     {
         finish=clock();
-        output_all(filename+"_jacobi.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,d,a,eigenval,eigenvec,-1); 
+        output_all(filename+"_jacobi.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,1.0,eigenval,eigenvec,-1); 
     }
     else
     {
         finish=clock(); 
-        output_fail(filename+"_jacobi.txt","Jacobi method exceeds maximum iteration number!",(double)(finish-start)/CLOCKS_PER_SEC,n,d,a); 
+        output_fail(filename+"_jacobi.txt","Jacobi method exceeds maximum iteration number!",(double)(finish-start)/CLOCKS_PER_SEC,n,1.0); 
     }
     
     return 0;

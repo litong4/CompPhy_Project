@@ -3,14 +3,25 @@ CXX := c++
 
 CPPFLAGS := -std=c++11 -lm -larmadillo -lblas -llapack -O3 
 
-PROG := beam.exe
+PROG1 := beam.exe
 
-OBJS := beam.o eig_solver.o eig_output.o
+OBJS1 := beam.o eig_solver.o eig_output.o
 
-$(PROG): $(OBJS)
+PROG2 := ho.exe
+
+OBJS2 := ho.o eig_solver.o eig_output.o
+
+all: $(PROG1) $(PROG2)
+
+$(PROG1): $(OBJS1)
 	$(CXX) -o $@ $^ $(CPPFLAGS)
-
+ 
+$(PROG2): $(OBJS2)
+	$(CXX) -o $@ $^ $(CPPFLAGS)
+    
 beam.o: eig_solver.hpp eig_output.hpp
+
+ho.o: eig_solver.hpp eig_output.hpp
 
 eig_solver.o: eig_solver.hpp 
 
