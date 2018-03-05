@@ -42,6 +42,7 @@ See \cite{wilkinson1962calculation}.
 Then, we can apply the bisection method for each subinterval to yield corresponding eigenvalue. 
 In addition, in this method, we allocate space only for tridiagonal elements as others are not referred. 
 It saves us a lot of memory which is crucial for huge size  calculations.
+The implementation of the bisection method is illustrated in Algorithm \ref{BisectionAlgo}.
 \begin{algorithm}[tb]
 	\label{BisectionAlgo}
 	\caption{The bisection method for diagonalization of symmetric tridiagonal matrix $A\in R^{n\times n}$. }
