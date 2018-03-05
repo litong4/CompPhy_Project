@@ -63,16 +63,19 @@ int main(int argc, char* argv[])
     output_all(filename+"_one_arma.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,rmax,eigenval,eigenvec,num); 
     
     //Jacobi's method
-    start=clock();
-    if (gen_mat_jacobi(n,Amat,eigenval,eigenvec,epsilon,maxiteration))
+    if (n<600) //Jacobi's method is only done for n<600
     {
-        finish=clock();
-        output_all(filename+"_one_jacobi.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,rmax,eigenval,eigenvec,num); 
-    }
-    else
-    {
-        finish=clock(); 
-        output_fail(filename+"_one_jacobi.txt","Jacobi method exceeds maximum iteration number!",(double)(finish-start)/CLOCKS_PER_SEC,n,rmax); 
+        start=clock();
+        if (gen_mat_jacobi(n,Amat,eigenval,eigenvec,epsilon,maxiteration))
+        {
+            finish=clock();
+            output_all(filename+"_one_jacobi.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,rmax,eigenval,eigenvec,num); 
+        }
+        else
+        {
+            finish=clock(); 
+            output_fail(filename+"_one_jacobi.txt","Jacobi method exceeds maximum iteration number!",(double)(finish-start)/CLOCKS_PER_SEC,n,rmax); 
+        }
     }
     
     //------------------------two-electron case------------------------//
@@ -104,16 +107,19 @@ int main(int argc, char* argv[])
         output_all(filename+"_two_wr"+outwr.str()+"_arma.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,rmax,eigenval,eigenvec,num); 
         
         //Jacobi's method
-        start=clock();
-        if (gen_mat_jacobi(n,Amat,eigenval,eigenvec,epsilon,maxiteration))
+        if (n<600) //Jacobi's method is only done for n<600
         {
-            finish=clock();
-            output_all(filename+"_two_wr"+outwr.str()+"_jacobi.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,rmax,eigenval,eigenvec,num); 
-        }
-        else
-        {
-            finish=clock(); 
-            output_fail(filename+"_two_wr"+outwr.str()+"_jacobi.txt","Jacobi method exceeds maximum iteration number!",(double)(finish-start)/CLOCKS_PER_SEC,n,rmax); 
+            start=clock();
+            if (gen_mat_jacobi(n,Amat,eigenval,eigenvec,epsilon,maxiteration))
+            {
+                finish=clock();
+                output_all(filename+"_two_wr"+outwr.str()+"_jacobi.txt",(double)(finish-start)/CLOCKS_PER_SEC,n,rmax,eigenval,eigenvec,num); 
+            }
+            else
+            {
+                finish=clock(); 
+                output_fail(filename+"_two_wr"+outwr.str()+"_jacobi.txt","Jacobi method exceeds maximum iteration number!",(double)(finish-start)/CLOCKS_PER_SEC,n,rmax); 
+            }
         }
     }
     

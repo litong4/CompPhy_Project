@@ -2,9 +2,9 @@
 # 3/5/2018
 #
 # This script generates benchmark results under this folder. 
-# The maximum rmax=10,20,30,40,50,60
-# The number of points n=100,150,200 
-# The corresponding filenames are r10n100, r10n150, ...
+# The maximum rmax=4,6,8,10
+# The number of points n=500,1000,1500,2000
+# The corresponding filenames are r4n500, r4n1000, ...
 #
 # For ho.exe: 
 # "one" and "two" in filenames indicate one- and two-electron case, respectively. 
@@ -21,9 +21,9 @@ make
 cp ${execu} ../benchmark/
 cd ../benchmark/
 
-for rmax in 10 20 30 40 50 60 
+for rmax in 4 6 8 10  
 do
-    for num in 100 150 200
+    for num in 200 300 400 500 
     do
         ./${execu} ${num} ${rmax} r${rmax}n${num}
     done

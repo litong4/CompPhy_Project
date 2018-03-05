@@ -1,6 +1,6 @@
 n = 200
 rmax = 4
-Use time 1.34375 seconds.
+Use time 1.1875 seconds.
 Eigenvalues: 
     4.0578
     7.9148
