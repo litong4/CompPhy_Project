@@ -306,6 +306,7 @@ of $(B-A)$.
 Based on Givens rotation, the main idea of Jacobi's method is to eliminate the off-diagonal element with maximum absolute value  
 by Eq. \ref{Givens}, \ref{GivensSimilarity}, \ref{root} and \ref{sincos}, 
 until the absolute values of all the off-diagonal elements are less than a specific tolerance. 
+This can also be done in a cyclic way, which avoids the necessity to find the maximum off-diagonal element in each iteration. 
 The pseudocode of Jacobi's method is given in Algorithm \ref{JacobiAlgo}. 
 \begin{algorithm}[tb]
 	\label{JacobiAlgo}
@@ -344,7 +345,7 @@ to confirm the correctness of our codes.
 	\section*{Acknowledgments}
 	We are grateful for the sincere guidance from Prof. Morten Hjorth-Jensen. 
 	
-%	\nocite{*} 
-%	\bibliographystyle{plain}
-%	\bibliography{proj2_ref}
+	\nocite{*} 
+	\bibliographystyle{plain}
+	\bibliography{proj2_ref}
 \end{document}
