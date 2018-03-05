@@ -23,11 +23,38 @@
 \begin{document}
 	\maketitle
 	\begin{abstract}\label{abstract}
-	Wait to be filled. 
+Eigenvalue decomposition of a Hermitian (or real symmetric) matrix is often the last step to solve a physics problem, and thus 
+in this report we investigate different numerical methods for the eigenvalue problem. 
+First two examples, buckling beam problem and quantum dots, are given to illustrate how a differential equation is transformed 
+to an eigenvalue problem of a real symmetric matrix. 
+Then we discuss details of Jacobi's and bisection methods, two important numerical algorithms for the eigenvalue problem. 
+Applications of these two methods in quantum dots are studied, which shows us when our approximation is good. 
+In addition, we find that bisection method has a better performance and accuracy than Jacobi's. 
+Therefore, bisection algorithm is usually more appropriate to utilize in physics. 
 	\end{abstract}
 
 	\section{Introduction}\label{intro}
-    Wait to be filled. 
+Eigenvalue problem is an important mathematical problem that appears commonly in science and engineering. 
+For matrix $A\in\mathbb{C}^{n \times n}$, its eigenvalues $\lambda_i$ and corresponding eigenvectors $\mathbf{v}_i\in\mathbb{C}^n$ satisfy
+\begin{equation}
+A\mathbf{v}_i=\lambda_i \mathbf{v}_i\ .
+\end{equation}
+If $A$ is Hermitian (or real symmetric), we can use its eigenvalues and eigenvectors to construct a unitary (or orthogonal) 
+similarity transformation to diagonalize $A$, i.e. 
+\begin{eqnarray}
+S^{\dagger}AS=\text{diag}\{\lambda_1,\lambda_2,\cdots,\lambda_n\}\text{ for Hermitian }A\in\mathbb{C}^{n\times n}, \\
+S^{T}AS=\text{diag}\{\lambda_1,\lambda_2,\cdots,\lambda_n\}\text{ for symmetric }A\in\mathbb{R}^{n\times n},
+\end{eqnarray}
+where $S$ is a unitary (or orthogonal) matrix and the $i$th column of $S$ is the eigenvector of $A$ with eigenvalue $\lambda_i$. 
+\par
+The diagonalization of a Hermitian (or real symmetric) matrix is usually the final step of a physics problem. 
+In Sec. \ref{physcis_problem} we give two examples of eigenvalue problems in physics, which shows how a differential equation 
+is transformed to an eigenvalue problem of a real symmetric matrix. 
+Sec. \ref{method} gives two algorithms, Jacobi's method and bisection method, to solve the eigenvalue problem. 
+In Sec. \ref{results} our numerical solutions are compared with the analytical solution 
+to show under what condition our approximation is valid. 
+We also discuss the performance of the two algorithms we implement in Sec. \ref{results}. 
+Conclusions and outlook are given in Sec. \ref{conclude}. 
 	
 	\section{Examples of eigenvalue problems in physics}\label{physcis_problem}
 	\subsection{The buckling beam problem}\label{buckling_sec}
@@ -234,8 +261,8 @@ G(k,l,\theta)=
 0 & \cdots & 0 & \cdots & 0 & \cdots & 1 \\ 
 \end{bmatrix}
 \end{equation}
-where $c=\cos\theta$ and $s=\sin\theta$ appear at the intersections of $l$th and $k$th rows and columns. 
-Therefore, for $k>l$, non-zero matrix elements of $G(k,l,\theta)$ is given by 
+where $c=\cos\theta$ and $s=\sin\theta$ appear at the intersections of $k$th and $l$th rows and columns. 
+Therefore, for $k>l$, non-zero matrix elements of $G(k,l,\theta)$ are given by 
 \begin{eqnarray*}
 g_{ii}&=&1 \quad \text{if } i\neq k,l\ ; \\
 g_{kk}&=&g_{ll}=c\ ; \\
@@ -268,7 +295,7 @@ c&=&\frac{1}{\sqrt{1+t^2}}\ , \\
 s&=&tc\ .
 \end{eqnarray}
 Usually we choose the smaller root of Eq. \ref{root}, which makes $|\theta|\leq\frac{\pi}{4}$ 
-and minimize the Frobenius norm
+and minimizes the Frobenius norm
 \footnote{The Frobenius norm of matrix $A\in \mathbb{C}^{n \times n}$ is defined as 
 \begin{equation*}
 ||A||_{F} = \sqrt{\sum_{i=1}^{n}\sum_{j=1}^{n}|a_{ij}|^2}\ . 
