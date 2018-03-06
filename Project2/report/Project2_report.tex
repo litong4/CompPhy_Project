@@ -29,7 +29,7 @@ First two examples, buckling beam problem and quantum dot, are given to illustra
 to an eigenvalue problem of a real symmetric matrix. 
 Then we discuss details of Jacobi's and bisection methods, two important numerical algorithms for the eigenvalue problem. 
 Applications of these two methods on the quantum dot are studied, which shows us when our approximation is good. 
-In addition, we find that bisection method has a better performance and accuracy than Jacobi's. 
+In addition, we find that bisection method has a better performance than Jacobi's. 
 Therefore, bisection algorithm is usually more appropriate to utilize in physics. 
 	\end{abstract}
 
@@ -326,6 +326,7 @@ The pseudocode of Jacobi's method is given in Algorithm \ref{JacobiAlgo}.
 \end{algorithm}
 The elmination can also be done in a cyclic way, which avoids the necessity to find the maximum off-diagonal element in each iteration. The implementation can be simply achieved by substituting the maximum off-diagonal searching element kernel in the classical Jacobi method with a loop over $A's$ elements.
 
+\subsection{Bisection eigenvalue algorithm} \label{bisection}
 \input{Bisection}
  
 	
@@ -343,7 +344,7 @@ In this section we first discuss the results of quantum dot with one electron (S
 which are obtained from Jacobi's method (Sec. \ref{jacobi}) with different $\rho_{\max}$ and grid points $N$. 
 Tolerance of the maximum off-diagonal element is $10^{-5}$. 
 \par
-The relation between $\rho_{\max}$ and the lowest three eigenvalues of quantum dot with one electron inside a harmonic oscillator potential is shown in Fig. \ref{fig:rmax_lambda}. 
+The relation between maximum radius $\rho_{\max}$ and the lowest three eigenvalues of quantum dot with one electron inside a harmonic oscillator potential is shown in Fig. \ref{fig:rmax_lambda}. 
 Grid spacing $h$ is fixed to be 0.01. 
 The numerical solutions of eigenvalues decrease quickly as $\rho_{\max}$ increases, 
 and these values approach analytical solutions when $\rho_{\max}$ is larger than 4. 
@@ -378,12 +379,48 @@ and $N=100$ is usually good enough for this problem.
 \end{table}
 \par
 Now we start to discuss the results of quantum dot with two electrons and Coulomb repulsion. 
+As Jacobi's method is too slow (we will discuss performance deeply in Sec. \ref{perf}), 
+we use bisection method (Sec. \ref{bisection}) to obtain results of this case. 
+Table \ref{tab:twoelectron} shows the ground state energies for different $\omega_r$, 
+with maximum radius $\rho_{\max}=50$ and grid number $N=1000$. 
+Results are stable as we increase $\rho_{\max}$ and $N$. 
+From Table \ref{tab:twoelectron} we can see that the larger $\omega_r$ is, the higher the ground-state energy is. 
+For larger $\omega_r$ the two electrons are more confined inside the trap, 
+which increases Coulomb energy between them. 
+\begin{table}[tb]
+	\centering
+	\caption{Ground state energies for different $\omega_r$, 
+		with maximum radius $\rho_{\max}=50$ and grid number $N=1000$. }
+	\label{tab:twoelectron}
+	\begin{tabular}{cc}
+		\hline
+		\hline
+		$\omega_r$   & Ground-state energy $\lambda$  \\
+		\hline
+		0.01 & 0.1058 \\
+		0.5  & 2.2298 \\
+		1    & 4.0567 \\
+		5    & 17.4192\\
+		\hline
+		\hline
+	\end{tabular}
+\end{table}
 
-	\subsection{Performance comparison of different methods}
+	\subsection{Performance comparison of different methods}\label{perf}
 	\input{Bi_result} 
 	
-	\section{Conclusions and outlook}\label{conclude}
-	Wait to be filled. 
+	\section{Conclusions}\label{conclude}
+In this report we discuss two numerical methods, Jacobi's and bisection algorithm, to solve eigenvalue problem in physics. 
+To illustrate that eigenvalue decomposition of a Hermitian (or real symmetric) matrix is usually the last step of a physics problem, 
+we first discuss buckling beam problem and quantum dot with one or two electrons, 
+which shows how a differential equation is discretized and transformed to an eigenvalue problem of a symmetric matrix. 
+Then details of Jacobi's and bisection methods are given, and applied to solve the quantum dot problem. 
+With large enough radius $\rho_{\max}$ and grid number $N$, we obtain results close to the analytical solutions for one-electron case. 
+For two-electron case, we give the numerical results of ground-state energies for different $\omega_r$, 
+i.e. different strength of harmonic oscillator potential. 
+In addition, the performance of these two methods is also compared, 
+and we show that bisection method is much faster and more than Jacobi's. 
+Therefore, bisection algorithm is usually more appropriate to employ in physics. 
 	
 	\section*{Acknowledgments}
 	We are grateful for the sincere guidance from Prof. Morten Hjorth-Jensen. 
