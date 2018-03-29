@@ -5,17 +5,23 @@
 #include<cstdlib>
 #include<cmath>
 #include<ctime>
+#include "planet.hpp"
 
 using namespace std; 
 
-const double pi=3.14159265359; 
-const double Gconst=4*pi*pi; 
+inline void calc_all_force(planet **solar,int num)
+{
+    for (int j=0; j<num; j++)
+        for (int k=j+1; k<num; k++)
+            solar[j]->force_add_both(*(solar[k])); 
+}
 
 int main(int argc, char* argv[])
 {
     // command line input
     string filename; 
     double time,dt; 
+    int method; //0: Euler. other: Verlet
     if (argc != 4)
     {
         cout << "Error in the input arguments! Please input two arguments: time t, time step dt and output filename. "<<endl;
@@ -28,98 +34,54 @@ int main(int argc, char* argv[])
         filename=argv[3];
     }
 
-    //Sun-Earth system 
-    double earth_r[3]={0},earth_v[3]={0},earth_a[3]={0}; //0, 1, 2 for x, y, z direction, respectively
-    double sun_r[3]={0},sun_v[3]={0},sun_a[3]={0};
-    double earth_force[3]={0},sun_force[3]={0}; 
-    double earth_mass, sun_mass; 
-    //initialize
-    earth_r[0]=1.0; earth_r[1]=0.0; earth_r[2]=0.0; 
-    earth_v[0]=0.0; earth_v[1]=2*pi; earth_v[3]=0.0; 
-    earth_mass=3e-6; sun_mass=1.0; 
+    //solar system initialize
+    ifstream infile; 
+    infile.open(filename+"_input.txt"); 
+    int num; 
+    infile >>method>>num; 
+    planet **solar; 
+    if (num<=0) return 0; 
+    solar=new planet*[num]; 
+    string readname; 
+    double ma,x0,y0,z0,vx0,vy0,vz0; 
+    for (int i=0; i<num; i++)
+    {
+        infile >>readname>>ma>>x0>>y0>>z0>>vx0>>vy0>>vz0; 
+        solar[i]=new planet(readname,ma,x0,y0,z0,vx0,vy0,vz0); 
+    }
+    
     ofstream outfile; 
-    double distsqr; 
-    //Euler's method
-    outfile.open(filename+"_Euler.txt"); 
-    outfile << "Earth's x y z; Sun's x y z" <<endl; 
+    outfile.open(filename+"_output.txt"); 
     int n; 
     n=int(time/dt); 
- 
-    for (int i=0; i<=n; i++)
-    {
-        distsqr=0.0; 
-        for (int j=0; j<3; j++)
-            distsqr=distsqr+(earth_r[j]-sun_r[j])*(earth_r[j]-sun_r[j]);
-        for (int j=0; j<3; j++)
+    outfile <<"Time: "<<time<<endl<<"Time step: "<<dt<<endl<<"Method: "<<method<<endl; 
+    //start calculation
+    if (method) 
+    {//Verlet method
+        calc_all_force(solar,num); 
+        for (int j=0; j<num; j++) solar[j]->accelerate_update(); 
+        for (int i=0; i<=n; i++)
         {
-            earth_force[j]=Gconst*sun_mass*earth_mass/distsqr*(sun_r[j]-earth_r[j])/sqrt(distsqr); 
-            earth_a[j]=earth_force[j]/earth_mass; 
-            earth_v[j]=earth_v[j]+earth_a[j]*dt; 
-            earth_r[j]=earth_r[j]+earth_v[j]*dt;  
-            sun_force[j]=-earth_force[j]; 
-            sun_a[j]=sun_force[j]/sun_mass; 
-            sun_v[j]=sun_v[j]+sun_a[j]*dt; 
-            sun_r[j]=sun_r[j]+sun_v[j]*dt;  
+            for (int j=0; j<num; j++) solar[j]->Verlet_r(dt); 
+            calc_all_force(solar,num); 
+            for (int j=0; j<num; j++) 
+            {
+                solar[j]->Verlet_v(dt); 
+                solar[j]->fileoutput(outfile); 
+            }
         }
-        for (int j=0; j<3; j++)
-            outfile << earth_r[j] <<' '; 
-        for (int j=0; j<3 ;j++)
-            outfile << sun_r[j] <<' '; 
-        outfile <<endl; 
     }
-    outfile.close(); 
-    
-    
-    //initialize
-    earth_r[0]=1.0; earth_r[1]=0.0; earth_r[2]=0.0; 
-    earth_v[0]=0.0; earth_v[1]=2*pi; earth_v[3]=0.0; 
-    sun_r[0]=0.0; sun_r[1]=0.0; sun_r[2]=0.0; 
-    sun_v[0]=0.0; sun_v[1]=0.0; sun_v[2]=0.0; 
-    earth_mass=3e-6; sun_mass=1.0; 
-    double earth_olda[3]={0},sun_olda[3]={0}; 
-    //Verlet method
-    outfile.open(filename+"_Verlet.txt"); 
-    outfile << "Earth's x y z; Sun's x y z" <<endl; 
-    n=int(time/dt); 
-    distsqr=0.0; 
-    for (int j=0; j<3; j++)
-        distsqr=distsqr+(earth_r[j]-sun_r[j])*(earth_r[j]-sun_r[j]); 
-    for (int j=0; j<3; j++)
-    {
-        earth_force[j]=Gconst*sun_mass*earth_mass/distsqr*(sun_r[j]-earth_r[j])/sqrt(distsqr); 
-        sun_force[j]=-earth_force[j]; 
-        earth_a[j]=earth_force[j]/earth_mass; 
-        sun_a[j]=sun_force[j]/sun_mass;
-    }
-    for (int i=0; i<=n; i++)
-    {
-        for (int j=0; j<3; j++)
-        {            
-            earth_r[j]=earth_r[j]+dt*earth_v[j]+0.5*dt*dt*earth_a[j]; 
-            sun_force[j]=-earth_force[j]; 
-            sun_r[j]=sun_r[j]+dt*sun_v[j]+0.5*dt*dt*sun_a[j]; 
-            earth_olda[j]=earth_a[j]; 
-            sun_olda[j]=sun_a[j]; 
-        }
-        
-        distsqr=0.0; 
-        for (int j=0; j<3; j++)
-            distsqr=distsqr+(earth_r[j]-sun_r[j])*(earth_r[j]-sun_r[j]); 
-        for (int j=0; j<3; j++)
+    else
+    {//Euler's method
+        for (int i=0; i<=n; i++)
         {
-            earth_force[j]=Gconst*sun_mass*earth_mass/distsqr*(sun_r[j]-earth_r[j])/sqrt(distsqr); 
-            sun_force[j]=-earth_force[j]; 
-            earth_a[j]=earth_force[j]/earth_mass; 
-            sun_a[j]=sun_force[j]/sun_mass; 
-            earth_v[j]=earth_v[j]+0.5*dt*(earth_a[j]+earth_olda[j]); 
-            sun_v[j]=sun_v[j]+0.5*dt*(sun_a[j]+sun_olda[j]);             
+            calc_all_force(solar,num); 
+            for (int j=0; j<num; j++)
+            {
+                solar[j]->Euler_update(dt); 
+                solar[j]->fileoutput(outfile); 
+            }
         }
-        
-        for (int j=0; j<3; j++)
-            outfile << earth_r[j] <<' '; 
-        for (int j=0; j<3 ;j++)
-            outfile << sun_r[j] <<' '; 
-        outfile <<endl; 
     }
     outfile.close(); 
     
