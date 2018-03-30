@@ -9,7 +9,7 @@ PROG2 := solar.exe
 
 OBJS1 := solar_noclass.o 
 
-OBJS2 := solar.o planet.o 
+OBJS2 := solar.o planet.o ode.o 
 
 all: $(PROG1) $(PROG2) 
 
@@ -21,7 +21,9 @@ $(PROG2): $(OBJS2)
     
 planet.o: planet.hpp
 
-solar.o: planet.hpp planet.cpp
+ode.o: planet.hpp planet.cpp ode.hpp
+
+solar.o: planet.hpp planet.cpp ode.cpp ode.hpp
 
 clean:
 	-rm -f *.exe *.o 

@@ -5,16 +5,10 @@
 #include<cstdlib>
 #include<cmath>
 #include<ctime>
+#include "ode.hpp"
 #include "planet.hpp"
 
 using namespace std; 
-
-inline void calc_all_force(planet **solar,int num)
-{
-    for (int j=0; j<num; j++)
-        for (int k=j+1; k<num; k++)
-            solar[j]->force_add_both(*(solar[k])); 
-}
 
 int main(int argc, char* argv[])
 {
@@ -37,6 +31,11 @@ int main(int argc, char* argv[])
     //solar system initialize
     ifstream infile; 
     infile.open(filename+"_input.txt"); 
+    if (!inflie) 
+    {
+        cerr << "Cannot open input file!"; 
+        return 1; 
+    }
     int num; 
     infile >>method>>num; 
     planet **solar; 
@@ -52,37 +51,19 @@ int main(int argc, char* argv[])
     
     ofstream outfile; 
     outfile.open(filename+"_output.txt"); 
+    if (!outfile) 
+    {
+        cerr << "Cannot open output file!"; 
+        return 1; 
+    }
     int n; 
     n=int(time/dt); 
     outfile <<"Time: "<<time<<endl<<"Time step: "<<dt<<endl<<"Method: "<<method<<endl; 
     //start calculation
     if (method) 
-    {//Verlet method
-        calc_all_force(solar,num); 
-        for (int j=0; j<num; j++) solar[j]->accelerate_update(); 
-        for (int i=0; i<=n; i++)
-        {
-            for (int j=0; j<num; j++) solar[j]->Verlet_r(dt); 
-            calc_all_force(solar,num); 
-            for (int j=0; j<num; j++) 
-            {
-                solar[j]->Verlet_v(dt); 
-                solar[j]->fileoutput(outfile); 
-            }
-        }
-    }
+        verlet(solar,num,dt,n,outfile);  //Verlet method 
     else
-    {//Euler's method
-        for (int i=0; i<=n; i++)
-        {
-            calc_all_force(solar,num); 
-            for (int j=0; j<num; j++)
-            {
-                solar[j]->Euler_update(dt); 
-                solar[j]->fileoutput(outfile); 
-            }
-        }
-    }
+        euler(solar,num,dt,n,outfile);   //Euler's method
     outfile.close(); 
     
     return 0; 

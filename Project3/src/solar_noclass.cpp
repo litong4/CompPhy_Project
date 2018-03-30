@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
     int n; 
     n=int(time/dt); 
  
-    for (int i=0; i<=n; i++)
+    for (int i=0; i<n; i++)
     {
         distsqr=0.0; 
         for (int j=0; j<3; j++)
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
         earth_a[j]=earth_force[j]/earth_mass; 
         sun_a[j]=sun_force[j]/sun_mass;
     }
-    for (int i=0; i<=n; i++)
+    for (int i=0; i<n; i++)
     {
         for (int j=0; j<3; j++)
         {            

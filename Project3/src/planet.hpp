@@ -1,10 +1,8 @@
 #ifndef planet_H
 #define planet_H
 
-#include <iostream>
 #include <fstream> 
 #include <string>
-#include <cmath>
 
 using namespace std; 
 
@@ -15,13 +13,16 @@ class planet
 {
 private:
     double r[3]={0},v[3]={0},a[3]={0},force[3]={0},olda[3]={0}; //0, 1, 2 for x, y, z direction, respectively
+    double distance=0.0; 
     double mass=0.0; 
     string name; 
     double time=0.0;
     bool init=false; 
+    bool monofar=true; 
     double dist(planet & partner) const; 
     void calc_force(planet & partner, double &fx, double &fy, double &fz) const; 
     void init_newstep(); 
+    void distance_update(); 
 public: 
     planet (); 
     planet (const string & nn); 

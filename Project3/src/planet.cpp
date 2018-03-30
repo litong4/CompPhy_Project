@@ -1,4 +1,3 @@
-#include <iostream> 
 #include <fstream>
 #include <string>
 #include <cmath>
@@ -27,6 +26,7 @@ planet:: planet (const string & nn, double m, double pos[3], double vel[3])
     name=nn; mass=m; 
     r[0]=pos[0]; r[1]=pos[1]; r[2]=pos[2]; 
     v[0]=vel[0]; v[1]=vel[1]; v[2]=vel[2]; 
+    distance=sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2]); 
 }
 
 planet:: planet (const string & nn, double m, double x, double y, double z, double vx, double vy, double vz)
@@ -34,6 +34,7 @@ planet:: planet (const string & nn, double m, double x, double y, double z, doub
     name=nn; mass=m; 
     r[0]=x; r[1]=y; r[2]=z; 
     v[0]=vx; v[1]=vy; v[2]=vz; 
+    distance=sqrt(x*x+y*y+z*z); 
 }
 
 double planet:: dist(planet & partner) const
@@ -91,6 +92,7 @@ void planet:: Euler_update(double dt)
         r[j]=r[j]+v[j]*dt;  
     }
     time=time+dt; 
+    distance_update(); 
 }
 
 void planet:: Verlet_r(double dt)
@@ -105,11 +107,19 @@ void planet:: Verlet_v(double dt)
     for (int j=0; j<3; j++)
         v[j]=v[j]+0.5*dt*(a[j]+olda[j]); 
     time=time+dt; 
+    distance_update(); 
 }
 
 
 void planet:: fileoutput(ofstream &file) const
 {
-    file <<name<<' '<<mass<<' '<<r[0]<<' '<<r[1]<<' '<<r[2]<<' '<<v[0]<<' '<<v[1]<<' '<<v[2]<<endl; 
+    file <<name<<' '<<mass<<' '<<r[0]<<' '<<r[1]<<' '<<r[2]<<' '<<v[0]<<' '<<v[1]<<' '<<v[2]<<' '<<monofar<<endl; 
 }
 
+void planet:: distance_update()
+{
+    double temp; 
+    temp=sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2]); 
+    if ((monofar) && (temp<distance)) monofar=false; 
+    distance=temp; 
+}
