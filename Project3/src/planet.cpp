@@ -182,7 +182,7 @@ void planet:: Verlet_v(double dt)
 
 void planet:: fileoutput(ofstream &file) const
 {
-    file <<name<<' '<<mass<<' '<<r[0]<<' '<<r[1]<<' '<<r[2]<<' '<<v[0]<<' '<<v[1]<<' '<<v[2]<<' '<<kinetic<<' '<<potential<<' '<<energy<<' '<<monofar<<endl; 
+    file <<time<<' '<<name<<' '<<mass<<' '<<r[0]<<' '<<r[1]<<' '<<r[2]<<' '<<v[0]<<' '<<v[1]<<' '<<v[2]<<' '<<kinetic<<' '<<potential<<' '<<energy<<' '<<monofar<<endl; 
 }
 
 void planet:: distance_update()
