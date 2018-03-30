@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
     //solar system initialize
     ifstream infile; 
     infile.open(filename+"_input.txt"); 
-    if (!inflie) 
+    if (!infile) 
     {
         cerr << "Cannot open input file!"; 
         return 1; 
@@ -43,10 +43,11 @@ int main(int argc, char* argv[])
     solar=new planet*[num]; 
     string readname; 
     double ma,x0,y0,z0,vx0,vy0,vz0; 
+    bool fix; 
     for (int i=0; i<num; i++)
     {
-        infile >>readname>>ma>>x0>>y0>>z0>>vx0>>vy0>>vz0; 
-        solar[i]=new planet(readname,ma,x0,y0,z0,vx0,vy0,vz0); 
+        infile >>readname>>ma>>x0>>y0>>z0>>vx0>>vy0>>vz0>>fix; 
+        solar[i]=new planet(readname,ma,x0,y0,z0,vx0,vy0,vz0,fix); 
     }
     
     ofstream outfile; 

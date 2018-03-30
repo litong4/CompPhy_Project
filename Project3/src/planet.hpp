@@ -19,6 +19,7 @@ private:
     double time=0.0;
     bool init=false; 
     bool monofar=true; 
+    bool fixed=false; 
     double dist(planet & partner) const; 
     void calc_force(planet & partner, double &fx, double &fy, double &fz) const; 
     void init_newstep(); 
@@ -29,6 +30,8 @@ public:
     planet (const string & nn, double m); 
     planet (const string & nn, double m, double pos[3], double vel[3]); 
     planet (const string & nn, double m, double x, double y, double z, double vx, double vy, double vz); 
+    planet (const string & nn, double m, double pos[3], double vel[3], bool fix); 
+    planet (const string & nn, double m, double x, double y, double z, double vx, double vy, double vz, bool fix); 
     double t() const {return time;}
     double ax() const {return a[0];}
     double ay() const {return a[1];}

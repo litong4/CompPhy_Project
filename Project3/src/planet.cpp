@@ -37,6 +37,24 @@ planet:: planet (const string & nn, double m, double x, double y, double z, doub
     distance=sqrt(x*x+y*y+z*z); 
 }
 
+planet:: planet (const string & nn, double m, double pos[3], double vel[3],bool fix)
+{
+    name=nn; mass=m; 
+    r[0]=pos[0]; r[1]=pos[1]; r[2]=pos[2]; 
+    v[0]=vel[0]; v[1]=vel[1]; v[2]=vel[2]; 
+    fixed=fix; 
+    distance=sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2]); 
+}
+
+planet:: planet (const string & nn, double m, double x, double y, double z, double vx, double vy, double vz, bool fix)
+{
+    name=nn; mass=m; 
+    r[0]=x; r[1]=y; r[2]=z; 
+    v[0]=vx; v[1]=vy; v[2]=vz; 
+    fixed=fix; 
+    distance=sqrt(x*x+y*y+z*z); 
+}
+
 double planet:: dist(planet & partner) const
 {
     double d;
@@ -75,39 +93,47 @@ void planet:: force_add_both(planet & partner)
 
 void planet:: accelerate_update()
 {
-    for (int i=0; i<3; i++)
-    {
-        olda[i]=a[i]; 
-        a[i]=force[i]/mass; 
-    }
+    if (!fixed) 
+        for (int i=0; i<3; i++)
+        {
+            olda[i]=a[i]; 
+            a[i]=force[i]/mass; 
+        }
     init=false; 
 }
 
 void planet:: Euler_update(double dt)
 {
     accelerate_update(); 
-    for (int j=0; j<3; j++)
+    if (!fixed)
     {
-        v[j]=v[j]+a[j]*dt; 
-        r[j]=r[j]+v[j]*dt;  
+        for (int j=0; j<3; j++)
+        {
+            v[j]=v[j]+a[j]*dt; 
+            r[j]=r[j]+v[j]*dt;  
+        }
+        distance_update(); 
     }
     time=time+dt; 
-    distance_update(); 
 }
 
 void planet:: Verlet_r(double dt)
 {
+    if (fixed) return; 
     for (int j=0; j<3; j++)
         r[j]=r[j]+dt*v[j]+0.5*dt*dt*a[j]; 
 }
 
 void planet:: Verlet_v(double dt)
-{    
-    accelerate_update();    
-    for (int j=0; j<3; j++)
-        v[j]=v[j]+0.5*dt*(a[j]+olda[j]); 
+{   
+    accelerate_update(); 
+    if (!fixed)
+    {           
+        for (int j=0; j<3; j++)
+            v[j]=v[j]+0.5*dt*(a[j]+olda[j]); 
+        distance_update(); 
+    }
     time=time+dt; 
-    distance_update(); 
 }
 
 
