@@ -38,34 +38,64 @@ int main(int argc, char* argv[])
     }
     int num; 
     infile >>method>>num; 
-    planet **solar; 
+    planet **solar=NULL; 
     if (num<=0) return 0; 
     solar=new planet*[num]; 
+    if (solar==NULL) 
+    {
+        cerr << "Cannot allocate memory for 'solar'!"; 
+        return 1; 
+    }
     string readname; 
     double ma,x0,y0,z0,vx0,vy0,vz0; 
     bool fix; 
     for (int i=0; i<num; i++)
     {
+        solar[i]=NULL; 
         infile >>readname>>ma>>x0>>y0>>z0>>vx0>>vy0>>vz0>>fix; 
         solar[i]=new planet(readname,ma,x0,y0,z0,vx0,vy0,vz0,fix); 
+        if (solar[i]==NULL)
+        {
+            cerr << "Cannot allocate memory for a planet!"; 
+            return 1; 
+        }
     }
     
-    ofstream outfile; 
-    outfile.open(filename+"_output.txt"); 
-    if (!outfile) 
-    {
-        cerr << "Cannot open output file!"; 
-        return 1; 
-    }
     int n; 
     n=int(time/dt); 
-    outfile <<"Time: "<<time<<endl<<"Time step: "<<dt<<endl<<"Method: "<<method<<endl; 
+    
+    ofstream* outfile=NULL; 
+    outfile=new ofstream[num]; 
+    if (outfile==NULL)
+    {
+        cerr << "Cannot allocate memory for 'outfile' array"; 
+        return 1; 
+    }
+    for (int i=0; i<num; i++)
+    {
+        outfile[i].open(filename+"_"+to_string(i)+".txt"); 
+        if (!outfile) 
+        {
+            cerr << "Cannot open output file!"; 
+            return 1; 
+        }
+        outfile[i] <<"Time: "<<time<<endl<<"Time step: "<<dt<<endl<<"Method: "<<method<<endl;
+    }
+    
     //start calculation
     if (method) 
         verlet(solar,num,dt,n,outfile);  //Verlet method 
     else
         euler(solar,num,dt,n,outfile);   //Euler's method
-    outfile.close(); 
+    
+    for (int i=0; i<num; i++)
+    {
+        delete solar[i]; 
+        outfile[i].close(); 
+    }
+    
+    delete[] solar; 
+    delete[] outfile; 
     
     return 0; 
 }

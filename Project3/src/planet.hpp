@@ -17,12 +17,15 @@ private:
     double mass=0.0; 
     string name; 
     double time=0.0;
-    bool init=false; 
+    double kinetic=0.0, potential=0.0, energy=0.0; 
+    bool init=false, init_pot=false; 
     bool monofar=true; 
     bool fixed=false; 
     double dist(planet & partner) const; 
-    void calc_force(planet & partner, double &fx, double &fy, double &fz) const; 
+    void calc_force(planet & partner, double &fx, double &fy, double &fz, double &pot) const; 
+    double calc_pot(planet &partner) const;
     void init_newstep(); 
+    void init_potcal(); 
     void distance_update(); 
 public: 
     planet (); 
@@ -52,6 +55,8 @@ public:
     void Euler_update(double dt); 
     void Verlet_r(double dt); 
     void Verlet_v(double dt); 
+    void energy_update(); 
+    void pot_add_both(planet & partner);
     void fileoutput(ofstream &file) const; 
 };
 
