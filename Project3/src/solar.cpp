@@ -80,6 +80,7 @@ int main(int argc, char* argv[])
             return 1; 
         }
         outfile[i] <<"Time: "<<time<<endl<<"Time step: "<<dt<<endl<<"Method: "<<method<<endl;
+        outfile[i] <<"time name mass x y z vx vy vz Ek Ep E lx ly lz Unbound?"<<endl;  
     }
     
     //start calculation

@@ -29,6 +29,7 @@ planet:: planet (const string & nn, double m, double pos[3], double vel[3])
     v[0]=vel[0]; v[1]=vel[1]; v[2]=vel[2]; 
     distance=sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2]); 
     kinetic=0.5*mass*(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]); 
+    ang_update(); 
 }
 
 planet:: planet (const string & nn, double m, double x, double y, double z, double vx, double vy, double vz)
@@ -38,6 +39,7 @@ planet:: planet (const string & nn, double m, double x, double y, double z, doub
     v[0]=vx; v[1]=vy; v[2]=vz; 
     distance=sqrt(x*x+y*y+z*z); 
     kinetic=0.5*mass*(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]); 
+    ang_update(); 
 }
 
 planet:: planet (const string & nn, double m, double pos[3], double vel[3],bool fix)
@@ -53,6 +55,7 @@ planet:: planet (const string & nn, double m, double pos[3], double vel[3],bool 
         cerr << "Fixed planet should not have any kinetic energy!"; 
         exit(2); 
     }
+    ang_update(); 
 }
 
 planet:: planet (const string & nn, double m, double x, double y, double z, double vx, double vy, double vz, bool fix)
@@ -68,6 +71,7 @@ planet:: planet (const string & nn, double m, double x, double y, double z, doub
         cerr << "Fixed planet should not have any kinetic energy!"; 
         exit(2); 
     }
+    ang_update(); 
 }
 
 double planet:: dist(planet & partner) const
@@ -139,6 +143,20 @@ void planet:: accelerate_update()
     init=false; 
 }
 
+void planet:: ang_update()
+{
+    for (int j=0; j<3; j++)
+        ang[j]=mass*(r[(j+1)%3]*v[(j+2)%3]-r[(j+2)%3]*v[(j+1)%3]); 
+}
+
+void planet:: distance_update()
+{
+    double temp; 
+    temp=sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2]); 
+    if ((monofar) && (temp<distance)) monofar=false; 
+    distance=temp; 
+}
+
 void planet:: Euler_update(double dt)
 {
     accelerate_update(); 
@@ -151,6 +169,7 @@ void planet:: Euler_update(double dt)
             r[j]=r[j]+v[j]*dt;  
             kinetic+=0.5*mass*v[j]*v[j]; 
         }
+        ang_update(); 
         distance_update(); 
     }
     time=time+dt; 
@@ -174,6 +193,7 @@ void planet:: Verlet_v(double dt)
             v[j]=v[j]+0.5*dt*(a[j]+olda[j]); 
             kinetic+=0.5*mass*v[j]*v[j]; 
         }
+        ang_update(); 
         distance_update(); 
     }
     time=time+dt; 
@@ -182,15 +202,11 @@ void planet:: Verlet_v(double dt)
 
 void planet:: fileoutput(ofstream &file) const
 {
-    file <<time<<' '<<name<<' '<<mass<<' '<<r[0]<<' '<<r[1]<<' '<<r[2]<<' '<<v[0]<<' '<<v[1]<<' '<<v[2]<<' '<<kinetic<<' '<<potential<<' '<<energy<<' '<<monofar<<endl; 
-}
-
-void planet:: distance_update()
-{
-    double temp; 
-    temp=sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2]); 
-    if ((monofar) && (temp<distance)) monofar=false; 
-    distance=temp; 
+    file <<time<<' '<<name<<' '<<mass<<' '
+    <<r[0]<<' '<<r[1]<<' '<<r[2]<<' '
+    <<v[0]<<' '<<v[1]<<' '<<v[2]<<' '
+    <<kinetic<<' '<<potential<<' '<<energy<<' '
+    <<ang[0]<<' '<<ang[1]<<' '<<ang[2]<<' '<<monofar<<endl; 
 }
 
 void planet:: energy_update()

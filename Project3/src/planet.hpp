@@ -12,7 +12,7 @@ const double Gconst=4*pi*pi;
 class planet
 {
 private:
-    double r[3]={0},v[3]={0},a[3]={0},force[3]={0},olda[3]={0}; //0, 1, 2 for x, y, z direction, respectively
+    double r[3]={0},v[3]={0},a[3]={0},force[3]={0},olda[3]={0},ang[3]={0}; //0, 1, 2 for x, y, z direction, respectively
     double distance=0.0; 
     double mass=0.0; 
     string name; 
@@ -27,6 +27,7 @@ private:
     void init_newstep(); 
     void init_potcal(); 
     void distance_update(); 
+    void ang_update(); 
 public: 
     planet (); 
     planet (const string & nn); 
