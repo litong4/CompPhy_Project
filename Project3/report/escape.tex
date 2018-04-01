@@ -13,23 +13,23 @@ In our unit system $v_e = 2\sqrt{2}\pi$ which larger than the speed of circular 
 We would like to use a trial and error method to find the escape velocity.
 In our calculation, we fix the step size $h=0.001$ and set up a criteria for escape.
 It is if an object doesn't start to turn back after time $t_c$, then it be regarded as a successful escape.
-We initialize our calculation the same as in Algorithm \ref{alg::verlet} except a different $v_{y}^0=2\pi c$, where $c$ is a constant larger than 1.
-With $1.3<\sqrt{2}<1.5$, we have a lower and upper bounds for $c$ where we can start a binary search for $v_e$.
+We initialize our calculation the same as in Algorithm \ref{alg::verlet} except a different $v_{y}^0=2\pi \alpha$, where $\alpha$ is a constant larger than 1.
+With $1.3<\sqrt{2}<1.5$, we have a lower and upper bounds for $\alpha$ where we can start a binary search for $v_e$.
 
 The results for different $t_c$ are presented in Table \ref{tab::escape}. 
-From the table, we find $c/\sqrt{2}$ converges to one as increasing $t_c$. 
+From the table, we find $\alpha/\sqrt{2}$ converges to one as increasing $t_c$. 
 Moreover, the total energy gets closer to zero at the same time.
 In sum, We would expect $v_e$ and $E_tot$ converge their theoretical value $2\sqrt{2}\pi$ and zero eventually. 
 
 \begin{table}[tb]
 	\centering
-	\caption{The escape velocity factor $c/\sqrt{2}$ in $v_e=2\pi c$ and total energy for different $t_c$.}
+	\caption{The escape velocity factor $\alpha/\sqrt{2}$ in $v_e=2\pi \alpha$ and total energy for different $t_c$.}
 	\label{my-label}
 	\label{tab::escape}
 	\begin{tabular}{ccc}
 	\hline
 	\hline
-	$t_c$  & $c/\sqrt{2}$          & $E_{tot}$          \\
+	$t_c$  & $\alpha/\sqrt{2}$          & $E_{tot}$          \\
 	\hline
 	500   & 0.998968061 & -5.9E-07 \\
 	1000  & 0.998418985 & -3.7E-07 \\
