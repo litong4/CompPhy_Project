@@ -27,7 +27,7 @@ We show our realization of the velocity-Verlet method in Algorithm \ref{alg::ver
 \begin{algorithm}[tb]
 	\label{alg::verlet}
 	\caption{The Velocity-Verlet method for the Earth-Sun system. It initials from a circular orbit.}
-	\KwIn{$x_0=1$, $y_0=0$, $v_{x}^0=0$, $v_{x}^0=4\pi^2$, $M_{\mathrm{E}}$, $M_{\mathrm{S}}$, $G$ }
+	\KwIn{$x_0=1$, $y_0=0$, $v_{x}^0=0$, $v_{y}^0=2\pi$, $M_{\mathrm{E}}$, $M_{\mathrm{S}}$, $G$ }
 	\KwOut{$\vec{x}$=($x_0$,$x_1$,...,$x_N$), $\vec{y}$, $\vec{v}_x$, $\vec{v}_y$, $\vec{E}_k$, $\vec{E}_p$, $\vec{E}$, $\vec{L}_z$} 
 	$r$ = sqrt($x_0^2$+$y_0^2$)\;
 	$a_x^0$ = $\frac{4\pi^2x_{i-1}}{r_{i-1}^3}$;
