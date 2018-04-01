@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
     }
     string readname; 
     double ma,x0,y0,z0,vx0,vy0,vz0; 
-    bool fix; 
+    bool fix,comcorrect; 
     for (int i=0; i<num; i++)
     {
         solar[i]=NULL; 
@@ -60,6 +60,8 @@ int main(int argc, char* argv[])
             return 1; 
         }
     }
+    infile >>comcorrect; //whether move the center of mass to origin 
+    if (comcorrect) com_correct(solar, num); 
     
     int n; 
     n=int(time/dt); 

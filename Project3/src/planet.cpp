@@ -214,3 +214,41 @@ void planet:: energy_update()
     energy=kinetic+potential; 
     init_pot=false; 
 }
+
+void com_correct(planet **solar, int num) //change to center of mass frame 
+{
+    double totalmass; 
+    double rcm[3]={0},vcm[3]={0}; 
+    totalmass=0.0; 
+    for (int i=0; i<num; i++)
+    {
+        totalmass+=solar[i]->m(); 
+        for (int j=0; j<3; j++)
+        {
+            rcm[j]+=(solar[i]->m())*(solar[i]->rr(j)); 
+            vcm[j]+=(solar[i]->m())*(solar[i]->vv(j)); 
+        }
+    }
+    for (int j=0; j<3; j++)
+    {
+        rcm[j]=rcm[j]/totalmass; 
+        vcm[j]=vcm[j]/totalmass; 
+    }
+    for (int i=0; i<num; i++)
+        for (int j=0; j<3; j++)
+        {
+            solar[i]->r[j]=(solar[i]->r[j])-rcm[j]; 
+            solar[i]->v[j]=(solar[i]->v[j])-vcm[j]; 
+        }
+    /* //check whether we successfully change to c.o.m frame 
+    double checkp[3]={0}, checkr[3]={0}; 
+    for (int i=0; i<num; i++)
+        for (int j=0; j<3; j++)
+        {
+            checkp[j]+=(solar[i]->mass)*(solar[i]->v[j]); 
+            checkr[j]+=(solar[i]->mass)*(solar[i]->r[j]); 
+        }
+    cout <<checkp[0]<<' '<<checkp[1]<<' '<<checkp[2]<<endl; 
+    cout <<checkr[0]<<' '<<checkr[1]<<' '<<checkr[2]<<endl; 
+    */
+}

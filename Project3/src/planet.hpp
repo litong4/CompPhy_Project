@@ -59,6 +59,7 @@ public:
     void energy_update(); 
     void pot_add_both(planet & partner);
     void fileoutput(ofstream &file) const; 
+    friend void com_correct(planet **solar, int num); 
 };
 
 
