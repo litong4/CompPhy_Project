@@ -25,8 +25,8 @@ In the Earth-Sun system, with this method, we can formulate Eq. \ref{earthsunode
 We show our realization of the velocity-Verlet method in Algorithm \ref{alg::verlet}. Compared with the Euler forward method, we can see the calculations in this method is more complicated.
 
 \begin{algorithm}[tb]
-	\label{alg::verlet}
 	\caption{The Velocity-Verlet method for the Earth-Sun system. It initials from a circular orbit.}
+	\label{alg::verlet}
 	\KwIn{$x_0=1$, $y_0=0$, $v_{x}^0=0$, $v_{y}^0=2\pi$, $M_{\mathrm{E}}$, $M_{\mathrm{S}}$, $G$ }
 	\KwOut{$\vec{x}$=($x_0$,$x_1$,...,$x_N$), $\vec{y}$, $\vec{v}_x$, $\vec{v}_y$, $\vec{E}_k$, $\vec{E}_p$, $\vec{E}$, $\vec{L}_z$} 
 	$r$ = sqrt($x_0^2$+$y_0^2$)\;
