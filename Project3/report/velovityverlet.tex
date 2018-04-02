@@ -1,6 +1,6 @@
-The velocity-Verlet method is widely used in molecular dynamics calculation as it overcomes these defects. It conserves energy with small round-off errors\cite{toxvaerd2012energy}.
+The velocity-Verlet method is widely used in molecular dynamics calculation as it overcomes above defects. It conserves energy within small round-off errors\cite{toxvaerd2012energy}.
 
-Staring from the Taylor expansions under same discretization
+Staring from the Taylor expansions under same discretization for both displacement and velocity
 
 \begin{equation}
 	\begin{aligned}
@@ -8,7 +8,7 @@ Staring from the Taylor expansions under same discretization
 		v_x^{i+1} = v_x^{i} + v_x^{i(1)}h + v_x^{i(2)}h^2 + O(h^3),
 	\end{aligned}
 \end{equation}
-with a initial value $x_0$ and $v_x^0$ at time $t_0$. We truncate at the third term and evaluate $v_x^{i(2)}h \approx v_x^{i+1(1)}-v_x^{i(1)}$. We can see that velocity-Verlet method is a two-step method with a local error $O(h^3)$
+with initial values $x_0$ and $v_x^0$ at time $t_0$. We truncate at the third term and evaluate $v_x^{i(2)}h \approx v_x^{i+1(1)}-v_x^{i(1)}$. Moreover, we can see that velocity-Verlet method is a two-step method with a local error $O(h^3)$
 
 In the Earth-Sun system, with this method, we can formulate Eq. \ref{earthsunodes} to
 
@@ -22,7 +22,7 @@ In the Earth-Sun system, with this method, we can formulate Eq. \ref{earthsunode
 			\end{array}  
 	\right.	
 \end{equation} 
-We show our realization of the velocity-Verlet method in Algorithm \ref{alg::verlet}. Compared with the Euler forward method, we can see the calculations in this method is more complicated.
+We show our realization of the velocity-Verlet method in Algorithm \ref{alg::verlet}. Compared with the Euler's forward method, we can see the calculations in this method are more complicated.
 
 \begin{algorithm}[tb]
 	\caption{The Velocity-Verlet method for the Earth-Sun system. It initials from a circular orbit.}
