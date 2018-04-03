@@ -1,14 +1,15 @@
-To test the stability of Euler's forward (Euler) and the velocity-Verlet (VV) method, we initialize the Earth-Sun system with a circular orbit as stated in Algorithms \ref{alg::euler}\&\ref{alg::verlet}.
+To test the stability of Euler's forward (Euler) and the Velocity-Verlet (VV) method, we initialize the Earth-Sun system with a circular orbit as stated in Algorithms \ref{alg::euler}\&\ref{alg::verlet}.
 
 We vary the step size $h$ starting from 0.02 yr to 0.001 yr.
 The Earth's orbits calculated by these two methods for 10 years are show in Fig. \ref{fig::earth}. 
 Globally speaking, we see orbits given by the Euler method expand in time.  
 On the other hand, VV methods' orbits keep circular with some tiny fluctuations hardly seen in Fig. \ref{fig:earth500}.
-Such observations justify the our statements in Sec. \ref{method} that the VV method conserves energy but the Euler method increase energy.
+Such observations justify the our statements in Sec. \ref{method} that the VV method conserves energy but the Euler method increases energy in the process of calculation.
 
 For a large step size in Fig. \ref{fig:earth500}, the Euler method is very unstable. Its orbit deviates from circle both in distance and shape apparently. 
-As the step size becomes smaller, we can see that the Euler method works better; as the orbits expand slower and slower from \ref{fig:earth500} to Fig. \ref{fig:earth10000}.
- The trends we observed agree with the statement that the error in the Euler method goes down with decreasing $h$. It worth noticing that we can hardly see differences between orbits yielded by the VV method, which indicates the it's stability.
+As the step size becomes smaller, we can see that the Euler method works better; as the orbits expand slower and slower from Fig. \ref{fig:earth500} to Fig. \ref{fig:earth10000}.
+ The trends we observed agree with the statement that the error in the Euler method goes down with decreasing $h$. 
+ It also worth noticing that we can hardly see differences between orbits yielded by the VV method, which indicates its stability.
  
 \begin{figure}[tb]
 	\begin{subfigure}[tb]{0.5\textwidth}
@@ -41,7 +42,7 @@ As the step size becomes smaller, we can see that the Euler method works better;
 
  For detailed check and performance comparison, we list distances, energies, angular momentums together with execution times for these two methods in Table \ref{tab::euler}\&\ref{tab::verlet} with precision up to $10^{-6}$.
  As conservation laws predicted by classical mechanics, physical quantities including kinetic, potential, total energies and angular momentum should be conserved in the Earth-Sun system. 
- From these two tables, we can see conservations in the VV method but not in the Euler method. 
+ From these two tables, we can see conservations for the VV method and divergences for the Euler method. 
  Thus, we can conclude that the VV method is stable and the Euler method is not.
  
  Compared the execution time of two methods, we find the Euler method is faster. 
@@ -50,7 +51,7 @@ As the step size becomes smaller, we can see that the Euler method works better;
 \begin{table}[tb]
 	\centering
 	\caption{The Euler forward method: step size; kinetic energy; potential energy; total energy; angular momentum in z direction, distance from the Sum and execution time from left to the right.
-	Energies are in the unit of $M_{\odot}\cdot$AU$^2/$yr$^2$. Angular momentum is in the unit of $M_{\odot}\cdot$AU$^2/$yr. }
+	Energies are in the unit of $M_{\mathrm{S}}\cdot$AU$^2/$yr$^2$. Angular momentum is in the unit of $M_{\mathrm{S}}\cdot$AU$^2/$yr. }
 	\label{tab::euler}
 	\begin{tabular}{ccccccc}
 	\hline
@@ -69,7 +70,7 @@ $h$ (yr) & $E_{kin}$       & $E_{pot}$         & $E_{tot}$          & $L_z$     
 \begin{table}[tb]
 	\centering
 	\caption{The Velocity-Verlet method: step size; kinetic energy; potential energy; total energy; angular momentum in z direction, distance from the Sum and execution time from left to the right.
-	Energies are in the unit of $M_{\odot}\cdot$AU$^2/$yr$^2$. Angular momentum is in the unit of $M_{\odot}\cdot$AU$^2/$yr. }
+	Energies are in the unit of $M_{\mathrm{S}}\cdot$AU$^2/$yr$^2$. Angular momentum is in the unit of $M_{\mathrm{S}}\cdot$AU$^2/$yr. }
 	\label{tab::verlet}
 	\begin{tabular}{ccccccc}
 	\hline
@@ -85,4 +86,4 @@ $h$ (yr)      & $E_{kin}$        & $E_{pot}$         & $E_{tot}$          & $L_z
 \end{tabular}
 \end{table}
 
-To obtain physically meaningful results, we will keep using the VV method in our following calculations.
+In order to obtain physically meaningful results, we will keep using the VV method in our following calculations.

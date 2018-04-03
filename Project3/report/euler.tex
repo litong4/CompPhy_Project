@@ -43,9 +43,9 @@ Getting back to the Earth-Sun system, we can formulate Eq. \ref{earthsunodes} to
 	\right.	
 \end{equation} 
 in unit of AU for length, year (yr) for time and $M_{\mathrm{S}}$ for mass. 
-We will keep using these units in our report calculations. 
+We will keep using this unit system in our report and calculations. 
 Starting from some initial conditions, we can simply solve out time evolution of the Earth iteratively. 
-Our implementation of this method with circular orbit initial conditions is shown in Algorithm \ref{alg::euler}. 
+Our implementation of this method with a  circular orbit initial conditions is shown in Algorithm \ref{alg::euler}. 
 
 \begin{algorithm}[tb]
 	\caption{The Euler's forward method for the Earth-Sun system. It initials from a circular orbit.}
@@ -72,4 +72,4 @@ Our implementation of this method with circular orbit initial conditions is show
 We can see that the Euler's forward method is easy to be realized.
  However, it has vital defects that it violates the energy conservation and time reversibility.
  The total energy increases with time in the Euler's forward method.
- That's why we need the velocity-Verlet method to describe physical systems.
+ That's why we need the Velocity-Verlet method to describe physical systems.
