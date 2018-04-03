@@ -14,25 +14,25 @@ As the step size becomes smaller, we can see that the Euler method works better;
 	\begin{subfigure}[tb]{0.5\textwidth}
 		\centering
 		\includegraphics[width=0.7\textwidth]{Earth500.eps}
-		\caption{$h = 0.02$yr}
+		\caption{$h = 0.02$ year}
 		\label{fig:earth500}
 	\end{subfigure}
 ~
 	\begin{subfigure}[tb]{0.5\textwidth}
 		\centering
-		\includegraphics[width=0.7\textwidth]{Earth1000.eps}		\caption{$h = 0.01$year}
+		\includegraphics[width=0.7\textwidth]{Earth1000.eps}		\caption{$h = 0.01$ year}
 		\label{fig:earth1000}
 	\end{subfigure}
 ~
 	\begin{subfigure}[tb]{0.5\textwidth}
 		\centering
-		\includegraphics[width=0.7\textwidth]{Earth5000.eps}		\caption{$h = 0.002$year}
+		\includegraphics[width=0.7\textwidth]{Earth5000.eps}		\caption{$h = 0.002$ year}
 		\label{fig:earth5000}
 	\end{subfigure}
 ~
 	\begin{subfigure}[tb]{0.5\textwidth}
 		\centering
-		\includegraphics[width=0.7\textwidth]{Earth10000.eps}		\caption{$h = 0.001$year}
+		\includegraphics[width=0.7\textwidth]{Earth10000.eps}		\caption{$h = 0.001$ year}
 		\label{fig:earth10000}
 	\end{subfigure}
 	\caption{Comparison of different step size $h$ of two methods for 10 years. }
@@ -49,12 +49,13 @@ As the step size becomes smaller, we can see that the Euler method works better;
  
 \begin{table}[tb]
 	\centering
-	\caption{The Euler forward method: step size; kinetic energy; potential energy; total energy; angular momentum in z direction, distance from the Sum and execution time from left to the right.}
+	\caption{The Euler forward method: step size; kinetic energy; potential energy; total energy; angular momentum in z direction, distance from the Sum and execution time from left to the right.
+	Energies are in the unit of $M_{\odot}\cdot$AU$^2/$yr$^2$. Angular momentum is in the unit of $M_{\odot}\cdot$AU$^2/$yr. }
 	\label{tab::euler}
 	\begin{tabular}{ccccccc}
 	\hline
 	\hline
-$h$          & $E_{kin}$        & $E_{pot}$         & $E_{tot}$          & $L_z$        & $r$         & execution time (ms)         \\
+$h$ (yr) & $E_{kin}$       & $E_{pot}$         & $E_{tot}$          & $L_z$        & $r$ (AU)        & execution time (ms)         \\
 	\hline
 2.000E-02 & 3.300E-05 & -4.700E-05 & -1.400E-05 & 3.500E-05 & 2.520E+00 & 2.500E-02 \\
 1.000E-02 & 2.900E-05 & -4.900E-05 & -2.000E-05 & 3.200E-05 & 2.432E+00 & 5.000E-02 \\
@@ -67,12 +68,13 @@ $h$          & $E_{kin}$        & $E_{pot}$         & $E_{tot}$          & $L_z$
 
 \begin{table}[tb]
 	\centering
-	\caption{The Velocity-Verlet method: step size; kinetic energy; potential energy; total energy; angular momentum in z direction, distance from the Sum and execution time from left to the right.}
+	\caption{The Velocity-Verlet method: step size; kinetic energy; potential energy; total energy; angular momentum in z direction, distance from the Sum and execution time from left to the right.
+	Energies are in the unit of $M_{\odot}\cdot$AU$^2/$yr$^2$. Angular momentum is in the unit of $M_{\odot}\cdot$AU$^2/$yr. }
 	\label{tab::verlet}
 	\begin{tabular}{ccccccc}
 	\hline
 	\hline
-$h$          & $E_{kin}$        & $E_{pot}$         & $E_{tot}$          & $L_z$        & $r$         & execution time (ms)         \\
+$h$ (yr)      & $E_{kin}$        & $E_{pot}$         & $E_{tot}$          & $L_z$        & $r$ (AU)     & execution time (ms)         \\
 	\hline
 2.000E-02 & 5.900E-05 & -1.180E-04 & -1.180E-04 & 1.900E-05 & 1.000014 & 2.600E-02 \\
 1.000E-02 & 5.900E-05 & -1.180E-04 & -1.180E-04 & 1.900E-05 & 1.000E+00 & 5.600E-02 \\
@@ -83,4 +85,4 @@ $h$          & $E_{kin}$        & $E_{pot}$         & $E_{tot}$          & $L_z$
 \end{tabular}
 \end{table}
 
-For physically meaningful, we will keep using the VV method in our following calculations.
+To obtain physically meaningful results, we will keep using the VV method in our following calculations.
