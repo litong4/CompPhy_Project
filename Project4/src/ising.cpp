@@ -61,6 +61,9 @@ int main(int argc, char **argv)
     double mag_avg,energy_avg,mag_tot,energy_tot; 
     mag_tot=magnetic; energy_tot=energy; 
     int flip,delta_e,delta_m;
+    double exponential[5]; 
+    for (int k=0; k<5; k++)
+        exponential[k]=exp(-4.0*(k-2)/temperature); 
     for (int k=1; k<=mc; k++)
     {
         for (int i=1; i<=n; i++)
@@ -68,15 +71,17 @@ int main(int argc, char **argv)
             {
                 flip=-a[i*n_a+j];  
                 delta_m=2*flip; 
-                delta_e=-(a[(i-1)*n_a+j]+a[(i+1)*n_a+j]+a[i*n_a+(j-1)]+a[i*n_a+(j+1)])*delta_m; 
-                if ((delta_e<0)||(double(rand())/RAND_MAX<exp(-delta_e/temperature)))
+                delta_e=-(a[(i-1)*n_a+j]+a[(i+1)*n_a+j]+a[i*n_a+(j-1)]+a[i*n_a+(j+1)])*flip; 
+                //if (abs(exponential[delta_e/2+2]-exp(-delta_e*2/temperature))>1e-6) //for debug
+                //cout <<delta_e<<' '<<exponential[delta_e/2+2]<<' '<<exp(-delta_e*2/temperature)<<endl; 
+                if ((delta_e<0)||(double(rand())/RAND_MAX<exponential[delta_e/2+2]))
                 {
                     a[i*n_a+j]=spin(flip); 
                     if (i==1) a[(n+1)*n_a+j]=spin(flip); 
                     if (i==n) a[j]=spin(flip); 
                     if (j==1) a[i*n_a+(n+1)]=spin(flip); 
                     if (j==n) a[i*n_a]=spin(flip); 
-                    magnetic+=delta_m; energy+=delta_e; 
+                    magnetic+=delta_m; energy+=delta_e*2; 
                 }
                 mag_tot+=magnetic; energy_tot+=energy; 
                 outfile <<magnetic<<' '<<energy<<endl; 
