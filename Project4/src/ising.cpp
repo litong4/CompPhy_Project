@@ -64,6 +64,10 @@ int main(int argc, char **argv)
     double exponential[5]; 
     for (int k=0; k<5; k++)
         exponential[k]=exp(-4.0*(k-2)/temperature); 
+    
+    random_device rd; 
+    mt19937 gen(rd()); 
+    double gen_max=gen.max(); 
     for (int k=1; k<=mc; k++)
     {
         for (int i=1; i<=n; i++)
@@ -74,7 +78,7 @@ int main(int argc, char **argv)
                 delta_e=-(a[(i-1)*n_a+j]+a[(i+1)*n_a+j]+a[i*n_a+(j-1)]+a[i*n_a+(j+1)])*flip; 
                 //if (abs(exponential[delta_e/2+2]-exp(-delta_e*2/temperature))>1e-6) //for debug
                 //cout <<delta_e<<' '<<exponential[delta_e/2+2]<<' '<<exp(-delta_e*2/temperature)<<endl; 
-                if ((delta_e<0)||(double(rand())/RAND_MAX<exponential[delta_e/2+2]))
+                if ((delta_e<0)||(gen()/gen_max<exponential[delta_e/2+2]))
                 {
                     a[i*n_a+j]=spin(flip); 
                     if (i==1) a[(n+1)*n_a+j]=spin(flip); 
