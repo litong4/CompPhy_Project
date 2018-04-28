@@ -44,7 +44,7 @@ int main(int argc, char **argv)
         cerr << "Cannot open output file!"; 
         return 1; 
     }
-    summary <<"Summary of Monte Carlo calculation of Ising model"<<endl; 
+    summary <<"Summary of Monte-Carlo mean values of Ising model"<<endl; 
     
     //initialization
     int n_a=n+2; 
@@ -76,7 +76,7 @@ int main(int argc, char **argv)
     //Metropolis algorithm 
     double mag_avg,energy_avg,mag_sqr_avg,energy_sqr_avg; 
     double mag_tot,energy_tot,mag_sqr_tot,energy_sqr_tot; 
-    mag_tot=abs(magnetic); energy_tot=energy; mag_sqr_tot=magnetic*magnetic; energy_sqr_tot=energy*energy; 
+    mag_tot=0;energy_tot=0;mag_sqr_tot=0;energy_sqr_tot=0; 
     int flip,delta_e,delta_m;
     double exponential[5]; 
     for (int k=0; k<5; k++)
@@ -115,21 +115,34 @@ int main(int argc, char **argv)
     energy_sqr_avg=energy_sqr_tot/mc/n/n; 
     
     double chi,cv; 
-    cv=(energy_sqr_avg-energy_avg)/temperature/temperature/n/n; 
-    chi=(mag_sqr_avg-mag_avg)/n/n; 
+    cv=(energy_sqr_avg-energy_avg*energy_avg)/temperature/temperature; 
+    chi=(mag_sqr_avg-mag_avg*mag_avg)*temperature; 
     
-    //test output
-    // for (int i=0; i<n_a; i++)
-    // {
-        // for (int j=0; j<n_a; j++)
-            // cout <<a[i*n_a+j]<<' '; 
-        // cout <<endl; 
-    // }
+    summary <<"Magnetization: "<<mag_avg<<endl; 
+    summary <<"Magnetization^2: "<<mag_sqr_avg<<endl; 
+    summary <<"Energy: "<<energy_avg<<endl; 
+    summary <<"Energy^2: "<<energy_sqr_avg<<endl; 
+    summary <<"Specific heat: "<<cv<<endl; 
+    summary <<"Susceptibility: "<<chi<<endl; 
     
-    summary <<"Magnetization per spin: "<<mag_avg/n/n<<endl; 
-    summary <<"Energy per spin: "<<energy_avg/n/n<<endl; 
-    summary <<"Specific heat per spin: "<<cv<<endl; 
-    summary <<"Susceptibility per spin: "<<chi<<endl; 
+    if (n==2) 
+    {
+        double cch,ssh,eep; 
+        cch=cosh(8/temperature); ssh=sinh(8/temperature); eep=exp(8/temperature); 
+        double energy_th,mag_th,cv_th,energy_sqr_th,mag_sqr_th,chi_th; 
+        mag_th=(2*eep+1)/(cch+3); 
+        mag_sqr_th=8*(eep+1)/(cch+3); 
+        energy_th=-8*ssh/(cch+3); 
+        energy_sqr_th=64*cch/(3+cch); 
+        cv_th=64*(1+3*cch)/(3+cch)/(3+cch)/temperature/temperature; 
+        chi_th=(mag_sqr_th-mag_th*mag_th)*temperature; 
+        summary <<"Magnetization (analytical): "<<mag_th<<endl; 
+        summary <<"Magnetization^2 (analytical): "<<mag_sqr_th<<endl; 
+        summary <<"Energy (analytical): "<<energy_th<<endl; 
+        summary <<"Energy^2 (analytical): "<<energy_sqr_th<<endl; 
+        summary <<"Specific heat (analytical): "<<cv_th<<endl; 
+        summary <<"Susceptibility (analytical): "<<chi_th<<endl; 
+    }
     
     delete []a; 
     if (outfile) outfile.close(); 
