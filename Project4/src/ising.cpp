@@ -9,13 +9,13 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    int n,mc; 
+    int n,mc,ini,out_detail; 
     double temperature; 
     string filename; 
     //input
-    if (argc != 5)
+    if (argc != 7)
     {
-        cout << "Error in the input arguments! Please input three arguments: size of the system N, temperature T, number of Monte Carlo cycles MC and output filename. "<<endl;
+        cout << "Error in the input arguments! \nPlease input five arguments: size of the system N, temperature T, number of Monte Carlo cycles MC, whether random initialization (0 or 1), whether output Monte Carlo process (0 or 1) and output filename. "<<endl;
         return 0; 
     }
     else
@@ -23,15 +23,28 @@ int main(int argc, char **argv)
         n=atof(argv[1]);
         temperature=atof(argv[2]); 
         mc=atof(argv[3]); 
-        filename=argv[4];
+        ini=atof(argv[4]); 
+        out_detail=atof(argv[5]); 
+        filename=argv[6];
     }
-    ofstream outfile; 
-    outfile.open(filename+".txt"); 
-    if (!outfile) 
+    ofstream outfile,summary; 
+    if (out_detail) 
+    {
+        outfile.open(filename+"_mc.txt"); 
+        if (!outfile)
+        {
+            cerr << "Cannot open output file!"; 
+            return 1; 
+        }
+        outfile <<"Magnetization M and energy E per spin in the Monte Carlo process"<<endl; 
+    }
+    summary.open(filename+"_sum.txt"); 
+    if (!summary) 
     {
         cerr << "Cannot open output file!"; 
         return 1; 
     }
+    summary <<"Summary of Monte Carlo calculation of Ising model"<<endl; 
     
     //initialization
     int n_a=n+2; 
@@ -43,7 +56,10 @@ int main(int argc, char **argv)
     for (int i=1; i<=n; i++)
         for (int j=1; j<=n; j++)
         {
-            a[i*n_a+j]=(double(rand())/RAND_MAX>0.5)?up:down; 
+            if (ini) 
+                a[i*n_a+j]=(double(rand())/RAND_MAX>0.5)?up:down; //random initialization
+            else
+                a[i*n_a+j]=up; //all point up
             magnetic+=a[i*n_a+j]; 
         }
     for (int i=1; i<=n; i++) //periodic boundary condition 
@@ -58,8 +74,9 @@ int main(int argc, char **argv)
             energy-=a[i*n_a+j]*(a[i*n_a+(j+1)]+a[(i+1)*n_a+j]); 
     
     //Metropolis algorithm 
-    double mag_avg,energy_avg,mag_tot,energy_tot; 
-    mag_tot=magnetic; energy_tot=energy; 
+    double mag_avg,energy_avg,mag_sqr_avg,energy_sqr_avg; 
+    double mag_tot,energy_tot,mag_sqr_tot,energy_sqr_tot; 
+    mag_tot=abs(magnetic); energy_tot=energy; mag_sqr_tot=magnetic*magnetic; energy_sqr_tot=energy*energy; 
     int flip,delta_e,delta_m;
     double exponential[5]; 
     for (int k=0; k<5; k++)
@@ -87,23 +104,36 @@ int main(int argc, char **argv)
                     if (j==n) a[i*n_a]=spin(flip); 
                     magnetic+=delta_m; energy+=delta_e*2; 
                 }
-                mag_tot+=magnetic; energy_tot+=energy; 
-                outfile <<magnetic<<' '<<energy<<endl; 
+                mag_tot+=abs(magnetic); energy_tot+=energy; 
+                mag_sqr_tot+=magnetic*magnetic; energy_sqr_tot+=energy*energy; 
+                if (outfile) outfile <<double(magnetic)/n/n<<' '<<double(energy)/n/n<<endl; 
             }
     }
     mag_avg=mag_tot/mc/n/n; 
     energy_avg=energy_tot/mc/n/n; 
+    mag_sqr_avg=mag_sqr_tot/mc/n/n; 
+    energy_sqr_avg=energy_sqr_tot/mc/n/n; 
+    
+    double chi,cv; 
+    cv=(energy_sqr_avg-energy_avg)/temperature/temperature/n/n; 
+    chi=(mag_sqr_avg-mag_avg)/n/n; 
     
     //test output
-    for (int i=0; i<n_a; i++)
-    {
-        for (int j=0; j<n_a; j++)
-            cout <<a[i*n_a+j]<<' '; 
-        cout <<endl; 
-    }
-    cout <<"magnetic: "<<magnetic<<' '<<mag_avg<<endl; 
-    cout <<"energy: "<<energy<<' '<<energy_avg<<endl; 
+    // for (int i=0; i<n_a; i++)
+    // {
+        // for (int j=0; j<n_a; j++)
+            // cout <<a[i*n_a+j]<<' '; 
+        // cout <<endl; 
+    // }
+    
+    summary <<"Magnetization per spin: "<<mag_avg/n/n<<endl; 
+    summary <<"Energy per spin: "<<energy_avg/n/n<<endl; 
+    summary <<"Specific heat per spin: "<<cv<<endl; 
+    summary <<"Susceptibility per spin: "<<chi<<endl; 
     
     delete []a; 
+    if (outfile) outfile.close(); 
+    summary.close(); 
+    
     return 0; 
 }
