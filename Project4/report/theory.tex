@@ -1,1 +1,131 @@
-To be filled. 
+In this section we discuss the properties of $L \times L$ Ising model with periodic boundary condition, 
+which indicates that a spin on one boundary will interact with another spin on the opposite boundary. 
+In other words, the summation over $<kl>$ in Eq. \ref{eq:hamiltonian} includes the following cases: 
+\begin{equation}
+k=(1,x),\ l=(L,x);\ k=(x,1),\ l=(x,L)
+\end{equation}
+where $(x,y)$ gives the coordinate of a spin in the $L \times L$ lattice. 
+
+\subsection{The solution of $2 \times 2$ Ising model}\label{sec:2times2}
+\begin{table}[tb]
+	\centering
+	\caption{All possible microscopic states of $2 \times 2$ Ising model. The energy is in the unit of $J$. }
+	\begin{tabular}{cccc}
+		\hline
+		\hline 
+		Number of spins up & Degeneracy & Energy & Magnetization \\ 
+		\hline
+		4 & 1 & -8 & 4 \\  
+		3 & 4 & 0 & 2 \\ 
+		2 & 4 & 0 & 0 \\ 
+		2 & 2 & 8 & 0 \\ 
+		1 & 4 & 0 & -2 \\ 
+		0 & 1 & -8 & -4 \\ 
+		\hline 
+		\hline
+	\end{tabular}
+	\label{tab:2times2} 
+\end{table}
+For simplicity, we begin our discussion of the analytical solution from the $2 \times 2$ case. 
+Table \ref{tab:2times2} shows all the possible microscopic states of  $2 \times 2$ Ising model. 
+The corresponding partition function can be obtained by summing over all these microscopic states $\alpha$ 
+\begin{equation}
+Z=\sum_{\alpha}e^{-\beta E_\alpha}=2e^{8\beta}+2e^{-8\beta}+12=4\cosh\left(8\beta\right)+12\,,
+\end{equation}
+where $\beta=1/T$ and $T$ is temperature in the unit of $J$ (Boltzmann constant $k_B$ is absorbed into $T$). 
+\par
+Thus, the mean energy of the system (in the unit of $J$) is 
+\begin{equation}
+\langle E\rangle=-\frac{\partial \ln Z}{\partial \beta}=-\frac{8\sinh\left(8\beta\right)}{\cosh\left(8\beta\right)+3}\,. 
+\end{equation}
+The mean magnetization of the system is 
+\begin{equation}
+\langle|M|\rangle=\frac{1}{Z}\sum_{\alpha} |M_\alpha| e^{-\beta E_\alpha}=\frac{1}{Z}\left(8e^{8\beta}+4\right)
+=\frac{2e^{8\beta}+1}{\cosh\left(8]\beta\right)+3}\,. 
+\end{equation}
+The heat capacity is 
+\begin{equation}\label{eq:cv}
+C_V=\frac{\partial \langle E\rangle}{\partial T}=-\beta^2\frac{\partial \langle E\rangle}{\partial \beta}
+=\beta^2\frac{64\left[1+\cosh\left(8\beta\right)\right]}{\left[6+\cosh\left(8\beta\right)\right]^2}
+=\beta^2\left(\langle E^2\rangle-\langle E\rangle^2\right)\,,
+\end{equation}
+where 
+\begin{equation}
+\langle E^2\rangle=\frac{1}{Z}\sum_{\alpha}E^2_\alpha e^{-\beta E_\alpha}=\frac{64\cosh\left(8\beta\right)}{\cosh\left(8\beta\right)+3}\,. 
+\end{equation}
+Similarly, we have 
+\begin{equation}
+\langle M^2\rangle=\frac{1}{Z}\sum_{\alpha} M^2_\alpha e^{-\beta E_\alpha}=\frac{8\left(e^{8\beta}+1\right)}{\cosh\left(8\beta\right)+3}\,, 
+\end{equation}
+and define susceptibility as 
+\begin{equation}\label{eq:chi}
+\chi=\frac{1}{\beta}\left(\langle M^2\rangle -\langle |M|\rangle ^2\right)\,. 
+\end{equation}
+Above results can be used to benchmark the Monte Carlo algorithm developed for 2D Ising model. 
+
+\subsection{Properties of phase transition in 2D Ising model}\label{sec:transition}
+One important aspect of the analytical solution of 2D Ising model is the phase transition at a nonzero critical temperature $T_C$. 
+There is a sharp transition from nonzero $\langle|M|\rangle $ to $\langle|M|\rangle=0$ 
+when temperature $T$ increases from $T<T_C$ to $T>T_C$. 
+In this section we do not discuss the details of the analytical solution of 2D Ising model. 
+Instead, we will show several important properties of phase transition in 2D Ising model, 
+which are used to benchmark our simulation. 
+\par
+Near $T_C$ we can characterize the behavior of many physical quantities by a power law.
+For 2D Ising model, the mean magnetization is given by
+\begin{equation}
+\langle M(T) \rangle \sim \left(T-T_C\right)^{\beta}\,,
+\end{equation}
+where $\beta=1/8$ is a critical exponent. A similar relation applies to heat capacity 
+\begin{equation}
+C_V(T) \sim \left|T_C-T\right|^{\alpha}\,,
+\end{equation}
+and the susceptibility
+\begin{equation}
+\chi(T) \sim \left|T_C-T\right|^{\gamma}\,,
+\end{equation}
+with $\alpha = 0$ and $\gamma = 7/4$.
+Another important quantity is called correlation length, which is expected
+to be of the order of the lattice spacing for $T>> T_C$. Because the spins
+become more and more correlated as $T$ approaches $T_C$, the correlation
+length increases as we get closer to the critical temperature. The divergent
+behavior of $\xi$ near $T_C$ is 
+\begin{equation}
+\xi(T) \sim \left|T_C-T\right|^{-\nu}\,,
+\label{eq:xi}
+\end{equation}
+with $\nu=1$. 
+A second-order phase transition is characterized by a
+correlation length which spans the whole system.
+Since we are always limited to a finite lattice, $\xi$ will
+be proportional with the size of the lattice. 
+Through so-called finite size scaling relations
+it is possible to relate the behavior at finite lattices with the 
+results for an infinitely large lattice.
+The critical temperature scales then as
+\begin{equation}
+T_C(L)-T_C(L=\infty) = aL^{-1/\nu}\,,
+\label{eq:tc}
+\end{equation}
+where $a$ is a constant and $\nu$ is defined in Eq. \ref{eq:xi}. 
+We set $T=T_C$ and obtain a mean magnetization
+\begin{equation}
+\langle M(T) \rangle \sim \left(T-T_C\right)^{\beta}
+\rightarrow L^{-\beta/\nu}\,,
+\label{eq:scale1}
+\end{equation}
+heat capacity
+\begin{equation}
+C_V(T) \sim \left|T_C-T\right|^{-\gamma} \rightarrow L^{\alpha/\nu},
+\label{eq:scale2}
+\end{equation}
+and susceptibility
+\begin{equation}
+\chi(T) \sim \left|T_C-T\right|^{-\alpha} \rightarrow L^{\gamma/\nu}\,.
+\label{eq:scale3}
+\end{equation}
+\par
+The exact solution gives $\nu=1$ and $T_C=\frac{2}{\ln\left(1+\sqrt{2}\right)}\approx 2.269$ 
+(in the unit of $J$) when $L\rightarrow\infty$. 
+With the help of Eq. \ref{eq:tc}, we can use our simulation results of different $L$ to extract $T_C$ for $L\rightarrow\infty$, 
+which will be done in Sec. \ref{results}. 

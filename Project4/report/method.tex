@@ -1,1 +1,59 @@
-To be filled. 
+In our work the Metropolis algorithm is adopted for the simulation of Ising model. 
+This algorithm is based on the theory of Markov chain and detailed balance. 
+In the example of Ising model, the transition rate between two microscopic states $i$ and $j$ should satisfy 
+\begin{equation}\label{eq:Wfrac}
+\frac{W(j \rightarrow i)}{W(i \rightarrow j)}=\frac{w_i}{w_j}=e^{-\beta\left(E_i-E_j\right)}\,,
+\end{equation}
+with $w_i=\frac{1}{Z}e^{-\beta E_i}$ 
+to obtain an equilibrated (and detailed-balanced) probability distribution given by canonical ensemble. 
+We can model $W(j \rightarrow i)$ as a product of the probability $T(j \rightarrow i)$ to make a transition from $j$ to $i$ 
+and the probability $A(j \rightarrow i)$ to accept this transition, namely 
+\begin{equation}
+W(j \rightarrow i)=T(j \rightarrow i)A(j \rightarrow i)\,.
+\end{equation}
+In the simulation of Ising model, we have no insight of $T(j \rightarrow i)$, 
+so we can simply assume that all the $T(j \rightarrow i)$ are the same. 
+Then Eq. \ref{eq:Wfrac} can be rewritten as 
+\begin{equation}\label{eq:Afrac}
+\frac{A(j \rightarrow i)}{A(i \rightarrow j)}=e^{-\beta\left(E_i-E_j\right)}\,,
+\end{equation}
+which describes the probability of accepting a transition from $j$ to $i$ in our simulation. 
+\par
+\begin{algorithm}[tb]
+	\caption{Metropolis algorithm for the simulation of Ising model. }
+	\label{alg::metropolis}
+	\KwIn{Size of the system $L$, temperature $T$, number of Monte Carlo cycles $MC$. }
+	\KwOut{$\langle E \rangle$, $\langle E^2 \rangle$, $\langle |M| \rangle$, $\langle M^2 \rangle$, $C_V$ and $\chi$. } 
+	Initialize spin lattice $a$ (in an ordered or random way)\;
+	Calculate $E$, $E^2$, $|M|$, $M^2$ of the initial lattice\; 
+	$E_{tot}=0,\,E^2_{tot}=0,\,|M|_{tot}=0,\,M^2_{tot}=0$\;
+	\For{$i=1;i<=MC;i++$}
+	{
+		\For{$j=1;j<=L;j++$}
+		{
+			\For{$k=1;k<=L;k++$}
+			{
+				$r=$ a uniformly distributed random number in $[0,1]$\;
+				Flip spin at position $(j,k)$\;
+				Calculate the change of energy $\Delta E$\; 
+				\If{$\Delta E < 0\ \mathrm{or}\ r<\exp\left(-\Delta E/T\right)$}
+				{
+					Accept this spin flip\; 
+					Update $E$, $E^2$, $|M|$, $M^2$\;
+				}
+				\Else
+				{
+					Reverse this spin flip\;
+				}
+			Add $E$, $E^2$, $|M|$, $M^2$ to their corresponding ``tot" variables\; 
+			}
+		}
+	}
+	Calculate the average $\langle E \rangle$, $\langle E^2 \rangle$, $\langle |M| \rangle$, $\langle M^2 \rangle$ by dividing $L^2MC$\; 
+	Calculate $C_V$ and $\chi$ by Eq. \ref{eq:cv} and \ref{eq:chi}\;
+\end{algorithm}
+Based on Eq. \ref{eq:Afrac} we can develop a simulation algorithm shown in Algorithm \ref{alg::metropolis}. 
+The main idea is that we flip one spin every time and use a random number $r$, which distributes uniformly in $[0,1]$, to determine whether to accept this flip based on Eq. \ref{eq:Afrac}. 
+If this flip reduces the energy or $r<\exp\left(-\Delta E/T\right)$ ($\Delta E$ is the energy change in the transition) we will accept. 
+Physical quantities $\langle E \rangle$, $\langle E^2 \rangle$, $\langle |M| \rangle$, $\langle M^2 \rangle$ 
+are obtained by averaging them in the Monte Carlo process. 

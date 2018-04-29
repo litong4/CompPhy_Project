@@ -1,1 +1,23 @@
-To be filled. 
+Ising model is a simple but important model for the explanation of magnetization. 
+It assumes that atomic spins are located on a $N$-dimensional lattice grid, 
+and these spins only have two discrete states, up ($\sigma=1$) or down ($\sigma=-1$). 
+Only neighboring spins can interact with each other, and thus its Hamiltonian can be written as 
+\begin{equation}\label{eq:hamiltonian}
+H=-J\sum_{<kl>}^{N}\sigma_k\sigma_l\,,
+\end{equation}
+where $J>0$ and $<kl>$ indicates that we only sum over nearest neighbors. 
+\par
+In statistical physics, the equilibrium of a system described by Eq. \ref{eq:hamiltonian} should be solved using canonical ensemble, 
+which involves a summation over all possible microscopic states to obtain the partition function. 
+For $N$-dimensional Ising model with size $L$ in each dimension, 
+the total number of all microscopic states is $2^{L^N}$, which cannot be simply summed over. 
+The one- and two-dimensional cases has been solved analytically and they show several interesting properties of phase transition. 
+But the exact solution of higher-dimensional Ising model is still unavailable, 
+and thus numerical methods which avoid the summation over all possible states are required for the simulation of Ising model. 
+\par
+In this report, we discuss the Monte Carlo method for the simulation of two-dimensional (2D) Ising model 
+and compare our results with the analytical solution. 
+In Sec. \ref{theory} several properties shown in the analytical solution are discussed, for the comparison in Sec. \ref{results}. 
+Sec. \ref{method} gives the outline of Monte Carlo algorithm we utilize for 2D Ising model, 
+and then Sec. \ref{results} discusses the results of our simulation. 
+Conclusions are given in Sec. \ref{conclude}. 
