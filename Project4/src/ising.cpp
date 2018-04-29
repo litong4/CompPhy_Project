@@ -96,6 +96,7 @@ int main(int argc, char **argv)
                 //if (abs(exponential[delta_e/2+2]-exp(-delta_e*2/temperature))>1e-6) //for debug
                 //cout <<delta_e<<' '<<exponential[delta_e/2+2]<<' '<<exp(-delta_e*2/temperature)<<endl; 
                 if ((delta_e<0)||(gen()/gen_max<exponential[delta_e/2+2]))
+                //if ((delta_e<0)||(gen()/gen_max<exp(-delta_e*2/temperature)))
                 {
                     a[i*n_a+j]=spin(flip); 
                     if (i==1) a[(n+1)*n_a+j]=spin(flip); 
@@ -104,11 +105,15 @@ int main(int argc, char **argv)
                     if (j==n) a[i*n_a]=spin(flip); 
                     magnetic+=delta_m; energy+=delta_e*2; 
                 }
+                //if (mc>mc/10) 
+                //{
                 mag_tot+=abs(magnetic); energy_tot+=energy; 
                 mag_sqr_tot+=magnetic*magnetic; energy_sqr_tot+=energy*energy; 
+                //}
                 if (outfile) outfile <<double(magnetic)/n/n<<' '<<double(energy)/n/n<<endl; 
             }
     }
+    //mc=mc-mc/10; 
     mag_avg=mag_tot/mc/n/n; 
     energy_avg=energy_tot/mc/n/n; 
     mag_sqr_avg=mag_sqr_tot/mc/n/n; 
@@ -128,13 +133,13 @@ int main(int argc, char **argv)
     if (n==2) 
     {
         double cch,ssh,eep; 
-        cch=cosh(8/temperature); ssh=sinh(8/temperature); eep=exp(8/temperature); 
+        cch=cosh(8.0/temperature); ssh=sinh(8.0/temperature); eep=exp(8.0/temperature); 
         double energy_th,mag_th,cv_th,energy_sqr_th,mag_sqr_th,chi_th; 
-        mag_th=(2*eep+1)/(cch+3); 
-        mag_sqr_th=8*(eep+1)/(cch+3); 
-        energy_th=-8*ssh/(cch+3); 
-        energy_sqr_th=64*cch/(3+cch); 
-        cv_th=64*(1+3*cch)/(3+cch)/(3+cch)/temperature/temperature; 
+        mag_th=(2.0*eep+1.0)/(cch+3.0); 
+        mag_sqr_th=8.0*(eep+1.0)/(cch+3.0); 
+        energy_th=-8.0*ssh/(cch+3); 
+        energy_sqr_th=64.0*cch/(3.0+cch); 
+        cv_th=64*(1+3.0*cch)/(3.0+cch)/(3.0+cch)/temperature/temperature; 
         chi_th=(mag_sqr_th-mag_th*mag_th)*temperature; 
         summary <<"Magnetization (analytical): "<<mag_th<<endl; 
         summary <<"Magnetization^2 (analytical): "<<mag_sqr_th<<endl; 
