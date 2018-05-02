@@ -74,6 +74,7 @@ int main(int argc, char **argv)
             energy-=a[i*n_a+j]*(a[i*n_a+(j+1)]+a[(i+1)*n_a+j]); 
     
     //Metropolis algorithm 
+    int num_accept=0; 
     double mag_avg,energy_avg,mag_sqr_avg,energy_sqr_avg; 
     double mag_tot,energy_tot,mag_sqr_tot,energy_sqr_tot; 
     mag_tot=0;energy_tot=0;mag_sqr_tot=0;energy_sqr_tot=0; 
@@ -104,6 +105,7 @@ int main(int argc, char **argv)
                     if (j==1) a[i*n_a+(n+1)]=spin(flip); 
                     if (j==n) a[i*n_a]=spin(flip); 
                     magnetic+=delta_m; energy+=delta_e*2; 
+                    num_accept++; 
                 }
                 //if (mc>mc/10) 
                 //{
@@ -150,7 +152,11 @@ int main(int argc, char **argv)
     }
     
     delete []a; 
-    if (outfile) outfile.close(); 
+    if (outfile) 
+    {
+        outfile <<"// Total number of acceptance: "<<num_accept<<endl; 
+        outfile.close(); 
+    }
     summary.close(); 
     
     return 0; 
