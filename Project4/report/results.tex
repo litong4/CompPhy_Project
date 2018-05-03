@@ -34,7 +34,7 @@ The reason is that both $\langle E^2 \rangle$ and $\langle E \rangle^2$ are larg
 so their difference, which determines $C_V$, will have a large numerical error. 
 This is unavoidable when $C_V$ and $\chi$ are small. 
 
-\subsection{Details in the Monte Carlo process}\label{sec:detailresult}
+\subsection{Convergence and probability distribution}\label{sec:detailresult}
 \begin{figure}[tb]
 	\begin{subfigure}[tb]{0.5\textwidth}
 		\centering
@@ -63,7 +63,7 @@ This is unavoidable when $C_V$ and $\chi$ are small.
 	Energy is in the unit of $J$. Temperature $T=1.0$ or $2.4$. }
 	\label{fig:process}
 \end{figure}
-For our simulation, it is important to know when the properties of our system become equilibrated, 
+For our simulation, it is important to know when the system become equilibrated, 
 which determines how many Monte Carlo cycles are necessary. 
 Fig. \ref{fig:process} shows the change of energy and magnetization as a function of the number of Monte Carlo cycles $MC$ 
 for $20 \times 20$ lattice with temperature $T=1.0$ and $T=2.4$. 
@@ -144,7 +144,7 @@ the distribution of magnetization is broader because of states with different ma
 \end{figure}
 To investigate the phase transition in Ising model, we perform calculations with different lattice size 
 $L=20,\,40,\,60,\,80,\,100,\,140$ in the temperature range $T\in[2.1,2.4]$. 
-The temperature step is 0.02. 
+Temperature step is 0.02 and the number of Monte Carlo cycles is $10^6$. 
 Fig. \ref{fig:transition} gives the energy, magnetization, heat capacity and susceptibility per spin as a function of temperature. 
 It can be seen that around $T=2.28$ the magnetization drops fast as $T$ increases, 
 indicating that the system undergoes a transition from an ordered phase to a disordered phase. 
