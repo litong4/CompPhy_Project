@@ -55,5 +55,6 @@ which describes the probability of accepting a transition from $j$ to $i$ in our
 Based on Eq. \ref{eq:Afrac} we can develop a simulation algorithm shown in Algorithm \ref{alg::metropolis}. 
 The main idea is that we flip one spin every time and use a random number $r$, which distributes uniformly in $[0,1]$, to determine whether to accept this flip based on Eq. \ref{eq:Afrac}. 
 If this flip reduces the energy or $r<\exp\left(-\Delta E/T\right)$ ($\Delta E$ is the energy change in the transition) we will accept. 
+In one Monte Carlo cycle we iterate through the full lattice and try to flip each spin. 
 Physical quantities $\langle E \rangle$, $\langle E^2 \rangle$, $\langle |M| \rangle$, $\langle M^2 \rangle$ 
 are obtained by averaging them in the Monte Carlo process. 

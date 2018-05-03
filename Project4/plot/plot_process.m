@@ -2,7 +2,8 @@
 
 clear; 
 
-num=20*20*1000; 
+latt=20*20; 
+num=latt*1000; 
 x=[1.0,2.4]; 
 h=0; 
 for temp=x
@@ -14,14 +15,18 @@ for temp=x
         ll=ll+1; 
         [mag(ll,:),ene(ll,:)]=textread(['..\benchmark\L20_init',num2str(init),'_temp',num2str(temp),'_mc.txt'],'%f %f\n','headerlines',1,'commentstyle','c++'); 
         figure(2*h-1); 
-        plot(1:num,mag(ll,:)); 
+        plot((1:num)./latt,mag(ll,:)); 
         hold on; 
         figure(2*h); 
-        plot(1:num,ene(ll,:)); 
+        plot((1:num)./latt,ene(ll,:)); 
         hold on; 
     end
     figure(2*h-1); 
     legend('Ordered initialization','Random initialization'); 
+    xlabel('Number of Monte Carlo cycles'); 
+    ylabel('Magnetization'); 
     figure(2*h); 
     legend('Ordered initialization','Random initialization'); 
+    xlabel('Number of Monte Carlo cycles'); 
+    ylabel('Energy'); 
 end

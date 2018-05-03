@@ -59,12 +59,13 @@ Similarly, we have
 \end{equation}
 and define susceptibility as 
 \begin{equation}\label{eq:chi}
-\chi=\frac{1}{\beta}\left(\langle M^2\rangle -\langle |M|\rangle ^2\right)\,. 
+\chi=\beta\left(\langle M^2\rangle -\langle |M|\rangle ^2\right)\,. 
 \end{equation}
 Above results can be used to benchmark the Monte Carlo algorithm developed for 2D Ising model. 
 
 \subsection{Properties of phase transition in 2D Ising model}\label{sec:transition}
-One important aspect of the analytical solution of 2D Ising model is the phase transition at a nonzero critical temperature $T_C$. 
+One important aspect of the analytical solution of 2D Ising model is the second-order phase transition 
+at a nonzero critical temperature $T_C$. 
 There is a sharp transition from nonzero $\langle|M|\rangle $ to $\langle|M|\rangle=0$ 
 when temperature $T$ increases from $T<T_C$ to $T>T_C$. 
 In this section we do not discuss the details of the analytical solution of 2D Ising model. 
@@ -84,7 +85,9 @@ and the susceptibility
 \begin{equation}
 \chi(T) \sim \left|T_C-T\right|^{\gamma}\,,
 \end{equation}
-with $\alpha = 0$ and $\gamma = 7/4$.
+with $\alpha = 0$ and $\gamma = 7/4$. 
+It should be noted that $\alpha=0$ does not mean that $C_V$ is continuous around $T_C$. 
+The analytical solution shows that $C_V$ will logarithmically diverge at $T_C$. 
 Another important quantity is called correlation length, which is expected
 to be of the order of the lattice spacing for $T>> T_C$. Because the spins
 become more and more correlated as $T$ approaches $T_C$, the correlation

@@ -2,7 +2,7 @@
 
 clear; 
 
-for size=20:20:80
+for size=[20 40 60 80 100 140]
     v=zeros(7,6); 
     ll=0; 
     x=2.1:0.02:2.4;
@@ -16,7 +16,7 @@ for size=20:20:80
     plot(x,v(:,1),'.-'); %magnetization
     hold on; 
     figure(2); 
-    plot(x,v(:,2),'.-'); %energy
+    plot(x,v(:,3),'.-'); %energy
     hold on; 
     figure(3); 
     plot(x,v(:,5),'.-'); %C_v
@@ -27,10 +27,18 @@ for size=20:20:80
 end 
 
 figure(1); 
-legend('L=20','L=40','L=60','L=80'); 
+legend('L=20','L=40','L=60','L=80','L=100','L=140','Location','northeast'); 
+xlabel('Temperature'); 
+ylabel('Magnetization per spin'); 
 figure(2); 
-legend('L=20','L=40','L=60','L=80'); 
+legend('L=20','L=40','L=60','L=80','L=100','L=140','Location','northwest'); 
+xlabel('Temperature'); 
+ylabel('Energy per spin'); 
 figure(3); 
-legend('L=20','L=40','L=60','L=80');
+legend('L=20','L=40','L=60','L=80','L=100','L=140','Location','northwest');
+xlabel('Temperature'); 
+ylabel('Heat Capacity per spin'); 
 figure(4); 
-legend('L=20','L=40','L=60','L=80');
+legend('L=20','L=40','L=60','L=80','L=100','L=140','Location','northwest');
+xlabel('Temperature'); 
+ylabel('Susceptibility per spin'); 

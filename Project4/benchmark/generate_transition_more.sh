@@ -15,7 +15,7 @@ make
 cp ${execu} ../benchmark/
 cd ../benchmark/
 
-for size in 20 40 60 80 
+for size in 100 140 
 do
     for temp1 in 2.1 2.2 2.3 
     do
@@ -26,7 +26,7 @@ do
         done
     done
     temp=2.4
-    ./${execu} ${size} ${temp} ${mc} ${init} ${detail} ${filename}_size${size}_temp${temp}
+    ./${execu} ${size} ${temp} ${mc} ${init} ${detail} ${filename}_size${size}_temp${temp} 
 done 
 
 rm ${execu}

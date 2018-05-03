@@ -123,7 +123,7 @@ int main(int argc, char **argv)
     
     double chi,cv; 
     cv=(energy_sqr_avg-energy_avg*energy_avg)/temperature/temperature; 
-    chi=(mag_sqr_avg-mag_avg*mag_avg)*temperature; 
+    chi=(mag_sqr_avg-mag_avg*mag_avg)/temperature; 
     
     summary <<"Magnetization: "<<mag_avg<<endl; 
     summary <<"Magnetization^2: "<<mag_sqr_avg<<endl; 
@@ -142,7 +142,7 @@ int main(int argc, char **argv)
         energy_th=-8.0*ssh/(cch+3); 
         energy_sqr_th=64.0*cch/(3.0+cch); 
         cv_th=64*(1+3.0*cch)/(3.0+cch)/(3.0+cch)/temperature/temperature; 
-        chi_th=(mag_sqr_th-mag_th*mag_th)*temperature; 
+        chi_th=(mag_sqr_th-mag_th*mag_th)/temperature; 
         summary <<"Magnetization (analytical): "<<mag_th<<endl; 
         summary <<"Magnetization^2 (analytical): "<<mag_sqr_th<<endl; 
         summary <<"Energy (analytical): "<<energy_th<<endl; 
