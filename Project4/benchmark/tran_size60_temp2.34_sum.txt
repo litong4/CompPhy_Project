@@ -1,0 +1,7 @@
+Summary of Monte-Carlo mean values of Ising model
+Magnetization: 1025.35
+Magnetization^2: 1.4461e+06
+Energy: -4621.17
+Energy^2: 2.1386e+07
+Specific heat: 5633.55
+Susceptibility: 168696

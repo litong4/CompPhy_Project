@@ -24,9 +24,9 @@ for temp=x
     figure(2*h-1); 
     legend('Ordered initialization','Random initialization'); 
     xlabel('Number of Monte Carlo cycles'); 
-    ylabel('Magnetization'); 
+    ylabel('Magnetization per spin'); 
     figure(2*h); 
     legend('Ordered initialization','Random initialization'); 
     xlabel('Number of Monte Carlo cycles'); 
-    ylabel('Energy'); 
+    ylabel('Energy per spin'); 
 end
