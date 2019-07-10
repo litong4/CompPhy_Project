@@ -1,2 +1,2 @@
-# CompPhy_Project1
-Project 1 for PHY480 (MSU) 
+# CompPhy_Project
+Projects for PHY480 (Michigan State University) 
